@@ -22,15 +22,15 @@ jobs:
         cache-dependency-path: webapp/package-lock.json
     
     - name: Install dependencies
-      working-directory: webapp
+      working-directory: ./webapp
       run: npm ci
     
     - name: Build frontend packages
-      working-directory: webapp
+      working-directory: ./webapp
       run: npm run build
     
     - name: Package application for Linux
-      working-directory: webapp
+      working-directory: ./webapp
       run: npm run compile:linux
     
     - name: List Linux build artifacts
@@ -66,15 +66,15 @@ jobs:
         cache-dependency-path: webapp/package-lock.json
     
     - name: Install dependencies
-      working-directory: webapp
+      working-directory: ./webapp
       run: npm ci
     
     - name: Build frontend packages
-      working-directory: webapp
+      working-directory: ./webapp
       run: npm run build
     
     - name: Package application for Windows
-      working-directory: webapp
+      working-directory: ./webapp
       run: npm run compile:win
     
     - name: List Windows build artifacts
@@ -110,15 +110,15 @@ jobs:
         cache-dependency-path: webapp/package-lock.json
     
     - name: Install dependencies
-      working-directory: webapp
+      working-directory: ./webapp
       run: npm ci
     
     - name: Build frontend packages
-      working-directory: webapp
+      working-directory: ./webapp
       run: npm run build
     
     - name: Package application for macOS
-      working-directory: webapp
+      working-directory: ./webapp
       run: npm run compile:mac
     
     - name: List macOS build artifacts
@@ -163,13 +163,13 @@ jobs:
       run: |
         mkdir -p release
         echo "=== Copying Linux artifacts ==="
-        cp -r starrailcopilot-linux/* release/ 2>/dev/null || echo "No Linux artifacts found"
+        cp -r ./starrailcopilot-linux/* release/ 2>/dev/null || echo "No Linux artifacts found"
         
         echo "=== Copying Windows artifacts ==="
-        cp -r starrailcopilot-windows/* release/ 2>/dev/null || echo "No Windows artifacts found"
+        cp -r ./starrailcopilot-windows/* release/ 2>/dev/null || echo "No Windows artifacts found"
         
         echo "=== Copying macOS artifacts ==="
-        cp -r starrailcopilot-macos/* release/ 2>/dev/null || echo "No macOS artifacts found"
+        cp -r ./starrailcopilot-macos/* release/ 2>/dev/null || echo "No macOS artifacts found"
         
         echo "=== Final release contents ==="
         find release -type f | head -30
