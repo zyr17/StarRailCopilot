@@ -18,7 +18,21 @@ const config = {
     buildResources: 'buildResources',
   },
   
-  files: ['packages/**/dist/**'],
+  files: [
+    'packages/**/dist/**',  // Vite构建输出
+    // 排除不必要的文件
+    '!**/node_modules/**', 
+    '!**/tests/**',
+    '!**/*.test.js',
+    '!**/*.spec.js',
+    '!**/coverage/**',
+    '!**/.nyc_output/**',
+    '!**/dist/**',  // 排除构建输出自身
+    // 确保包含关键目录
+    '../config/**',     // 如果存在的话
+    '../deploy/**',     // 如果存在的话
+    '../scripts/**'     // 脚本文件
+  ],
   
   extraMetadata: {
     version: process.env.VITE_APP_VERSION,
