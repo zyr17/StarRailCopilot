@@ -20,9 +20,20 @@ jobs:
         cache: 'npm'
         cache-dependency-path: webapp/package-lock.json
     
+    - name: Clean dependencies cache
+      working-directory: ./webapp
+      run: |
+        if [ -f "package-lock.json" ]; then
+          echo "Removing existing package-lock.json to force fresh dependency resolution"
+          rm package-lock.json
+        fi
+        echo "Clearing npm cache"
+        npm cache clean --force || true
+    
     - name: Install dependencies
       working-directory: ./webapp
-      run: npm ci
+      run: |
+        npm install --legacy-peer-deps
       continue-on-error: false
     
     - name: Build frontend
