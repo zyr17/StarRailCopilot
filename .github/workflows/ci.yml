@@ -45,19 +45,19 @@ jobs:
     
     - name: List build artifacts
       run: |
-        echo "=== Windows build artifacts ==="
-        if [ -d "webapp/dist" ]; then
-          find webapp/dist -type f | head -20
-          echo "=== Total files in dist ==="
-          find webapp/dist -type f | wc -l
-          echo "=== Key executables ==="
-          find webapp/dist -name "*.exe" -o -name "*.msi" 2>/dev/null | while read file; do
-            echo "Found: $file"
-            ls -lh "$file"
-          done
-        else
-          echo "Warning: webapp/dist directory not found"
-        fi
+        Write-Host "=== Windows build artifacts ==="
+        if (Test-Path "webapp/dist") {
+          Get-ChildItem "webapp/dist" -File | Select-Object -First 20 | Format-Table
+          Write-Host "=== Total files in dist ==="
+          (Get-ChildItem "webapp/dist" -File).Count
+          Write-Host "=== Key executables ==="
+          Get-ChildItem "webapp/dist" -Filter "*.exe", "*.msi" | ForEach-Object {
+            Write-Host "Found: $($_.FullName)"
+            Get-Item $_.FullName | Select-Object Name, Length, LastWriteTime | Format-Table
+          }
+        } else {
+          Write-Host "Warning: webapp/dist directory not found"
+        }
     
     - name: Upload Windows artifacts
       uses: actions/upload-artifact@v4
