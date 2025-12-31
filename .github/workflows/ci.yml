@@ -51,7 +51,7 @@ jobs:
           Write-Host "=== Total files in dist ==="
           (Get-ChildItem "webapp/dist" -File).Count
           Write-Host "=== Key executables ==="
-          Get-ChildItem "webapp/dist" -Filter "*.exe", "*.msi" | ForEach-Object {
+          Get-ChildItem "webapp/dist" -Filter "*.exe" | ForEach-Object {
             Write-Host "Found: $($_.FullName)"
             Get-Item $_.FullName | Select-Object Name, Length, LastWriteTime | Format-Table
           }
