@@ -39,9 +39,9 @@ jobs:
       working-directory: ./webapp
       run: npm run build
     
-    - name: Package for Windows
+    - name: Package for Windows (Portable Version)
       working-directory: ./webapp
-      run: npm run compile:win
+      run: npm run compile
     
     - name: List build artifacts
       run: |

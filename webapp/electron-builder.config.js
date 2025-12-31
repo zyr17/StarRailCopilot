@@ -36,10 +36,6 @@ const config = {
       {
         target: 'dir',
         arch: ['x64']
-      },
-      {
-        target: 'nsis',
-        arch: ['x64']
       }
     ],
     icon: 'buildResources/icon.ico'
