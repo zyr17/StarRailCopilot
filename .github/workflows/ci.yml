@@ -1,0 +1,212 @@
+name: Build and Package
+
+on:
+  push:
+    branches: [ main, test-ci ]
+  pull_request:
+    branches: [ main, test-ci ]
+
+jobs:
+  # 通用构建和打包 (Linux 平台)
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: webapp/package-lock.json
+    
+    - name: Install dependencies
+      working-directory: webapp
+      run: npm ci
+    
+    - name: Build frontend packages
+      working-directory: webapp
+      run: npm run build
+    
+    - name: Package application for Linux
+      working-directory: webapp
+      run: npm run compile:linux
+    
+    - name: List Linux build artifacts
+      run: |
+        echo "=== Linux build artifacts ==="
+        find webapp/dist -type f -name "*.AppImage" -o -name "*.deb" -o -name "*.rpm" 2>/dev/null | while read file; do
+          echo "Found: $file"
+          ls -lh "$file"
+        done
+        
+        echo "=== All files in dist ==="
+        find webapp/dist -type f | head -20
+    
+    - name: Upload Linux artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: starrailcopilot-linux
+        path: webapp/dist/
+        retention-days: 30
+
+  # Windows 构建
+  build-windows:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: webapp/package-lock.json
+    
+    - name: Install dependencies
+      working-directory: webapp
+      run: npm ci
+    
+    - name: Build frontend packages
+      working-directory: webapp
+      run: npm run build
+    
+    - name: Package application for Windows
+      working-directory: webapp
+      run: npm run compile:win
+    
+    - name: List Windows build artifacts
+      run: |
+        echo "=== Windows build artifacts ==="
+        find webapp/dist -type f -name "*.exe" -o -name "*.msi" 2>/dev/null | while read file; do
+          echo "Found: $file"
+          ls -lh "$file"
+        done
+        
+        echo "=== All files in dist ==="
+        find webapp/dist -type f | head -20
+    
+    - name: Upload Windows artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: starrailcopilot-windows
+        path: webapp/dist/
+        retention-days: 30
+
+  # macOS 构建
+  build-macos:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: webapp/package-lock.json
+    
+    - name: Install dependencies
+      working-directory: webapp
+      run: npm ci
+    
+    - name: Build frontend packages
+      working-directory: webapp
+      run: npm run build
+    
+    - name: Package application for macOS
+      working-directory: webapp
+      run: npm run compile:mac
+    
+    - name: List macOS build artifacts
+      run: |
+        echo "=== macOS build artifacts ==="
+        find webapp/dist -type f -name "*.dmg" -o -name "*.zip" -o -name "*.app" 2>/dev/null | while read file; do
+          echo "Found: $file"
+          ls -lh "$file"
+        done
+        
+        echo "=== All files in dist ==="
+        find webapp/dist -type f | head -20
+    
+    - name: Upload macOS artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: starrailcopilot-macos
+        path: webapp/dist/
+        retention-days: 30
+
+  # 汇总所有构建产物 (仅限 test-ci 和 main 分支)
+  package-all:
+    runs-on: ubuntu-latest
+    needs: [build, build-windows, build-macos]
+    if: github.ref == 'refs/heads/test-ci' || github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+    
+    - name: Display all artifacts
+      run: |
+        echo "=== All available artifacts ==="
+        find . -name "*.exe" -o -name "*.dmg" -o -name "*.AppImage" -o -name "*.deb" -o -name "*.rpm" -o -name "*.msi" -o -name "*.zip" 2>/dev/null | while read file; do
+          echo "Found: $file"
+          ls -lh "$file"
+        done
+    
+    - name: Create release package
+      run: |
+        mkdir -p release
+        echo "=== Copying Linux artifacts ==="
+        cp -r starrailcopilot-linux/* release/ 2>/dev/null || echo "No Linux artifacts found"
+        
+        echo "=== Copying Windows artifacts ==="
+        cp -r starrailcopilot-windows/* release/ 2>/dev/null || echo "No Windows artifacts found"
+        
+        echo "=== Copying macOS artifacts ==="
+        cp -r starrailcopilot-macos/* release/ 2>/dev/null || echo "No macOS artifacts found"
+        
+        echo "=== Final release contents ==="
+        find release -type f | head -30
+        echo "=== Total files ==="
+        find release -type f | wc -l
+        echo "=== Directory structure ==="
+        find release -type d | sort
+        echo "=== File sizes summary ==="
+        du -sh release/* 2>/dev/null || echo "No files in release directory"
+    
+    - name: Upload complete package
+      uses: actions/upload-artifact@v4
+      with:
+        name: starrailcopilot-complete
+        path: release/
+        retention-days: 30
+        
+    - name: Create Release (main branch only)
+      if: github.ref == 'refs/heads/main'
+      uses: softprops/action-gh-release@v1
+      with:
+        name: "StarRailCopilot Release"
+        files: release/*
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+        body: |
+          ## StarRailCopilot Release
+          
+          This release contains:
+          - Linux: AppImage, DEB, RPM packages
+          - Windows: NSIS installer and portable version
+          - macOS: DMG image and ZIP archive
+          
+          ### How to use:
+          - **Windows**: Run the .exe installer or use the portable version
+          - **macOS**: Open the .dmg and drag to Applications
+          - **Linux**: Use the .AppImage for portable or .deb/.rpm for package managers
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

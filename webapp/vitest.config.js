@@ -17,6 +17,31 @@ const config = {
      */
     testTimeout: 30_000,
     hookTimeout: 30_000,
+    
+    /**
+     * Coverage configuration
+     */
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html', 'lcov'],
+      exclude: [
+        'node_modules/',
+        'tests/',
+        'dist/',
+        'build/',
+        '**/*.d.ts',
+        '**/*.config.*',
+        '**/coverage/**'
+      ],
+      thresholds: {
+        global: {
+          branches: 70,
+          functions: 70,
+          lines: 70,
+          statements: 70
+        }
+      }
+    },
   },
 };
 
