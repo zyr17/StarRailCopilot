@@ -250,12 +250,12 @@ class BuildValidator:
         if self.results['failed']:
             print(f"\n[ERROR] Error details:")
             for error in self.results['failed']:
-                print(f"   • {error}")
+                print(f"   - {error}")
         
         if self.results['warnings']:
             print(f"\n[WARN] Warning details:")
             for warning in self.results['warnings']:
-                print(f"   • {warning}")
+                print(f"   - {warning}")
         
         # Final determination
         if len(self.results['failed']) == 0:

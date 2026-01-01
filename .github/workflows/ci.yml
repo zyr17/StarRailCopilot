@@ -43,29 +43,29 @@ jobs:
     
     - name: Test simple script
       run: |
-        Write-Host "运行简单测试脚本..."
+        Write-Host "Running simple test script..."
         python scripts/test-simple.py > test_simple_output.txt 2>&1
         if ($LASTEXITCODE -ne 0) {
-          Write-Host "警告: 简单测试失败"
-          Write-Host "输出内容:"
+          Write-Host "Warning: Simple test failed"
+          Write-Host "Output content:"
           Get-Content test_simple_output.txt
         } else {
-          Write-Host "简单测试成功"
+          Write-Host "Simple test successful"
         }
     
     - name: Add missing files
       run: |
-        Write-Host "安装Python依赖和工具..."
+        Write-Host "Installing Python dependencies and tools..."
         python -m pip install --upgrade pip
         python -m pip install PyYAML
-        Write-Host "添加缺失的项目文件..."
+        Write-Host "Adding missing project files..."
         python scripts/add-missing-files.py > add_missing_files_output.txt 2>&1
         if ($LASTEXITCODE -ne 0) {
-          Write-Host "警告: 添加缺失文件失败"
-          Write-Host "输出内容:"
+          Write-Host "Warning: Adding missing files failed"
+          Write-Host "Output content:"
           Get-Content add_missing_files_output.txt
         } else {
-          Write-Host "添加缺失文件成功"
+          Write-Host "Adding missing files successful"
         }
       
     - name: Upload debug output
@@ -78,14 +78,14 @@ jobs:
     
     - name: Validate build
       run: |
-        Write-Host "验证构建质量..."
+        Write-Host "Validating build quality..."
         python validate_build.py webapp/dist/win-unpacked > validate_output.txt 2>&1
         if ($LASTEXITCODE -ne 0) {
-          Write-Host "警告: 验证发现问题"
-          Write-Host "验证输出:"
+          Write-Host "Warning: Validation found issues"
+          Write-Host "Validation output:"
           Get-Content validate_output.txt
         } else {
-          Write-Host "验证通过"
+          Write-Host "Validation passed"
         }
       
     - name: Upload validate output
