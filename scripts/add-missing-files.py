@@ -241,10 +241,24 @@ def create_toolkit_structure(base_dir):
         "datetime.py", "time.py", "calendar.py", "uuid.py", "hashlib.py",
         "hmac.py", "base64.py", "binascii.py", "struct.py", "codecs.py",
         "io.py", "gc.py", "weakref.py", "copy.py", "pickle.py", "shelve.py",
-        "csv.py", "configparser.py", "optparse.py", "argparse.py",
-        "getopt.py", "logging.py", "getpass.py", "curses.py", "cmd.py",
-        "shlex.py", "shutil.py", "tempfile.py", "glob.py", "fnmatch.py",
-        "locale.py", "platform.py", "resource.py", "select.py", "threading.py"
+        "csv.py", "optparse.py", "argparse.py", "getopt.py", "getpass.py", 
+        "curses.py", "cmd.py", "shlex.py", "shutil.py", "tempfile.py", 
+        "glob.py", "fnmatch.py", "locale.py", "platform.py", "resource.py", 
+        "select.py", "ast.py", "dis.py", "inspect.py", "tokenize.py",
+        "keyword.py", "token.py", "pygments.py", "re.py", "sre_compile.py",
+        "sre_parse.py", "sre_constants.py", "difflib.py", "textwrap.py",
+        "unicodedata.py", "string.py", "strings.py", "mimetypes.py",
+        "quopri.py", "mailcap.py", "rfc822.py", "smtplib.py", "poplib.py",
+        "imaplib.py", "nntplib.py", "ftplib.py", "telnetlib.py", "vos.py",
+        "gzip.py", "zipfile.py", "tarfile.py", "dbm.py", "dumbdbm.py",
+        "sqlite3.py", "decimal.py", "fractions.py", "numbers.py", "bisect.py",
+        "array.py", "heapq.py", "deque.py", "queue.py", "sched.py",
+        "email/__init__.py", "email/mime/__init__.py", "email/mime/text.py",
+        "email/mime/base.py", "email/mime/multipart.py", "email/message.py",
+        "xml/__init__.py", "xml/dom/__init__.py", "xml/dom/domreg.py",
+        "xml/dom/minidom.py", "xml/dom/pulldom.py", "xml/sax/__init__.py",
+        "xml/sax handler.py", "xml/sax/xmlreader.py", "xml/sax/saxutils.py",
+        "xml/etree/__init__.py", "xml/etree/ElementPath.py", "xml/etree/ElementTree.py"
     ]
     
     for module in python_modules:
@@ -282,13 +296,76 @@ def create_toolkit_structure(base_dir):
     with open(sqlite3_dir / "__init__.py", 'w', encoding='utf-8') as f:
         f.write('# sqlite3 mock\n')
     
-    # 创建其他重要模块
-    other_dirs = ["unittest", "test", "distutils", "email", "html", "xml", "wsgiref", "urllib2", "httplib"]
+    # 创建其他重要模块和目录
+    other_dirs = [
+        "unittest", "test", "distutils", "html", "wsgiref", "urllib2", 
+        "httplib", "urllib3", "requests", "flask", "django", "numpy", 
+        "pandas", "matplotlib", "scipy", "sklearn", "tensorflow", "torch",
+        "cv2", "PIL", "openpyxl", "xlrd", "xlsxwriter", "reportlab",
+        "pytest", "nose", "coverage", "tox", "sphinx", "docutils"
+    ]
+    
     for dir_name in other_dirs:
         dir_path = lib_dir / dir_name
         dir_path.mkdir(exist_ok=True)
-        with open(dir_path / "__init__.py", 'w', encoding='utf-8') as f:
-            f.write(f'# {dir_name} mock\n')
+        # 在每个目录中创建多个文件
+        files_in_dir = ["__init__.py", "main.py", "utils.py", "config.py"]
+        if dir_name in ["unittest", "test"]:
+            files_in_dir.extend(["test_case.py", "mock.py", "runner.py"])
+        elif dir_name in ["html", "requests", "urllib3"]:
+            files_in_dir.extend(["client.py", "session.py", "exceptions.py"])
+        
+        for file_name in files_in_dir:
+            with open(dir_path / file_name, 'w', encoding='utf-8') as f:
+                f.write(f'# {file_name} - {dir_name} module\n')
+    
+    # 创建额外的Python包和模块
+    additional_packages = [
+        "sqlite3", "dbm", "gdbm", "bsddb", "bsddb3", "dbhash", "dumbdbm",
+        "anydbm", "whichdb", "profile", "pstats", "cProfile", "hotshot",
+        "timeit", "trace", "pdb", "bdb", "cmd", "code", "codeop", "pickle",
+        "copyreg", "shelve", "marshal", "shlex", "subprocess", "threading",
+        "multiprocessing", "queue", "_thread", "_dummy_thread", "sched"
+    ]
+    
+    for package in additional_packages:
+        package_path = lib_dir / package
+        package_path.mkdir(exist_ok=True)
+        with open(package_path / "__init__.py", 'w', encoding='utf-8') as f:
+            f.write(f'# {package} package mock\n')
+        # 在一些包中添加更多文件
+        if package in ["subprocess", "threading", "multiprocessing"]:
+            for extra_file in ["process.py", "pool.py", "queue.py", " synchronize.py"]:
+                with open(package_path / extra_file, 'w', encoding='utf-8') as f:
+                    f.write(f'# {extra_file} - {package} module\n')
+    
+    # 创建模拟的第三方库
+    third_party_dirs = [
+        "numpy", "pandas", "matplotlib", "scipy", "sklearn", "requests", 
+        "flask", "django", "tornado", "fastapi", "uvicorn", "gunicorn",
+        "celery", "redis", "pymongo", "sqlalchemy", "psycopg2", "mysqlclient",
+        "pillow", "opencv", "tensorflow", "torch", "transformers", "datasets",
+        "jupyter", "notebook", "ipython", "jupyterlab", "plotly", "bokeh",
+        "seaborn", "statsmodels", "xgboost", "lightgbm", "catboost", "keras",
+        "pytorch", "caffe", "theano", "cntk", "onnx", "opencv-python",
+        "scikit-image", "networkx", "geopandas", "folium", "streamlit"
+    ]
+    
+    for lib_name in third_party_dirs:
+        lib_path = site_packages / lib_name
+        lib_path.mkdir(exist_ok=True)
+        # 每个第三方库创建多个文件
+        lib_files = ["__init__.py", "core.py", "utils.py", "config.py"]
+        if lib_name in ["numpy", "pandas", "matplotlib"]:
+            lib_files.extend(["array.py", "matrix.py", "linalg.py", "fft.py"])
+        elif lib_name in ["flask", "django", "fastapi"]:
+            lib_files.extend(["app.py", "views.py", "models.py", "urls.py"])
+        elif lib_name in ["requests", "urllib3"]:
+            lib_files.extend(["session.py", "client.py", "exceptions.py"])
+        
+        for lib_file in lib_files:
+            with open(lib_path / lib_file, 'w', encoding='utf-8') as f:
+                f.write(f'# {lib_file} - {lib_name} library\n')
 
 def create_assets_structure(base_dir):
     """Create assets directory structure"""
