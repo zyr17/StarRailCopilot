@@ -39,7 +39,7 @@ def create_config_files(base_dir):
     }
     
     with open(config_dir / "deploy.yaml", 'w', encoding='utf-8') as f:
-        yaml.dump(deploy_config, f, default_flow_style=False, allow_unicode=True)
+        yaml.dump(deploy_config, f, default_flow_style=False, allow_unicode=False)
     
     # Create template.json
     template_config = {
@@ -61,7 +61,7 @@ def create_config_files(base_dir):
     }
     
     with open(config_dir / "template.json", 'w', encoding='utf-8') as f:
-        json.dump(template_config, f, indent=2, ensure_ascii=False)
+        json.dump(template_config, f, indent=2, ensure_ascii=True)
 
 def create_deploy_files(base_dir):
     """Create deployment files"""
@@ -131,9 +131,9 @@ class ConfigManager:
         """Save configuration"""
         with open(self.config_path, 'w', encoding='utf-8') as f:
             if self.config_path.suffix == '.yaml':
-                yaml.dump(config, f, default_flow_style=False, allow_unicode=True)
+                yaml.dump(config, f, default_flow_style=False, allow_unicode=False)
             elif self.config_path.suffix == '.json':
-                json.dump(config, f, indent=2, ensure_ascii=False)
+                json.dump(config, f, indent=2, ensure_ascii=True)
 ''',
         "utils.py": '''#!/usr/bin/env python3
 """Utility Functions"""
