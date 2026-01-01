@@ -234,8 +234,21 @@ def main():
     # 在GitHub Actions中，脚本从根目录调用
     base_dir = Path("webapp") / "dist" / "win-unpacked"
     
+    print(f"当前工作目录: {Path.cwd()}")
+    print(f"脚本所在目录: {Path(__file__).parent}")
+    print(f"目标构建目录: {base_dir}")
+    print(f"构建目录是否存在: {base_dir.exists()}")
+    
     if not base_dir.exists():
         print(f"错误: 构建目录不存在: {base_dir}")
+        # 尝试列出webapp/dist目录的内容
+        dist_dir = Path("webapp") / "dist"
+        if dist_dir.exists():
+            print(f"webapp/dist目录内容:")
+            for item in dist_dir.iterdir():
+                print(f"  - {item.name} ({'目录' if item.is_dir() else '文件'})")
+        else:
+            print(f"webapp/dist目录也不存在")
         return 1
     
     print(f"正在添加缺失文件到: {base_dir}")
@@ -252,6 +265,8 @@ def main():
         
     except Exception as e:
         print(f"❌ 添加缺失文件失败: {e}")
+        import traceback
+        traceback.print_exc()
         return 1
 
 if __name__ == "__main__":
