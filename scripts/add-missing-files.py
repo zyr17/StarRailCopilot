@@ -108,7 +108,7 @@ if __name__ == "__main__":
     main()
 ''',
         "config.py": '''#!/usr/bin/env python3
-"""配置管理"""
+"""Configuration Management"""
 
 import json
 import yaml
@@ -119,7 +119,7 @@ class ConfigManager:
         self.config_path = Path(config_path)
     
     def load_config(self):
-        """加载配置"""
+        """Load Configuration"""
         if self.config_path.suffix == '.yaml':
             with open(self.config_path, 'r', encoding='utf-8') as f:
                 return yaml.safe_load(f)
@@ -136,7 +136,7 @@ class ConfigManager:
                 json.dump(config, f, indent=2, ensure_ascii=False)
 ''',
         "utils.py": '''#!/usr/bin/env python3
-"""工具函数"""
+"""Utility Functions"""
 
 import os
 import sys
@@ -144,7 +144,7 @@ import json
 from pathlib import Path
 
 def find_game_path():
-    """查找游戏路径"""
+    """Find Game Path"""
     # Find StarRail game installation path
     possible_paths = [
         r"C:\\Program Files\\StarRail",
@@ -446,7 +446,7 @@ def extract_7z(archive_path, extract_dir):
     """Extract 7z file"""
     print(f"Extracting 7z file: {archive_path} -> {extract_dir}")
     try:
-        # 确保目标目录存在
+        # Ensure target directory exists
         Path(extract_dir).mkdir(parents=True, exist_ok=True)
         # Use 7z for extraction
         result = subprocess.run(["7z", "x", str(archive_path), f"-o{extract_dir}"], 
@@ -474,27 +474,27 @@ def extract_zip(archive_path, extract_dir):
 
 def download_and_setup_git(toolkit_dir):
     """Download and setup Git for Windows"""
-    print("=== 开始下载Git for Windows ===")
+    print("=== Starting to download Git for Windows ===")
     git_dir = toolkit_dir / "Git"
     git_dir.mkdir(exist_ok=True)
     
     git_exe_path = Path("PortableGit-2.42.0.2-64-bit.7z.exe")
     
-    # Git for Windows便携版下载链接
+    # Git for Windows portable version download link
     git_url = "https://github.com/git-for-windows/git/releases/download/v2.42.0.windows.2/PortableGit-2.42.0.2-64-bit.7z.exe"
     
     print(f"Downloading Git for Windows portable version...")
     if download_file(git_url, git_exe_path):
         print(f"Download successful, starting extraction...")
-        # 解压到toolkit目录
+        # Extract to toolkit directory
         if extract_7z(git_exe_path, toolkit_dir):
             print("Git for Windows download and extraction successful")
-            # 清理下载文件
+            # Clean up downloaded files
             if git_exe_path.exists():
                 git_exe_path.unlink()
             return True
         else:
-            print("解压失败")
+            print("Extraction failed")
             return False
     else:
         print("Git for Windows setup failed")
@@ -507,17 +507,17 @@ def download_and_setup_python(toolkit_dir):
     python_dll_path = toolkit_dir / "python39.dll"
     lib_dir = toolkit_dir / "Lib"
     
-    # Python嵌入版下载链接
+    # Python embedded version download link
     python_url = "https://www.python.org/ftp/python/3.9.13/python-3.9.13-embed-amd64.zip"
     temp_zip_path = Path("temp_python.zip")
     
     if download_file(python_url, temp_zip_path):
         if extract_zip(temp_zip_path, toolkit_dir):
-            # 安装pip和依赖
+            # Install pip and dependencies
             pip_install_cmd = f'"{python_exe_path}" -m pip install --upgrade pip'
             try:
                 subprocess.run(pip_install_cmd.split(), check=True, cwd=str(toolkit_dir))
-                print("pip升级成功")
+                print("pip upgrade successful")
                 
                 # Install dependencies from requirements.txt
                 if Path("requirements.txt").exists():
@@ -525,7 +525,7 @@ def download_and_setup_python(toolkit_dir):
                     subprocess.run(install_cmd.split(), check=True, cwd=str(toolkit_dir))
                     print("Python dependencies installation successful")
                 
-                # 清理临时文件
+                # Clean up temporary files
                 if temp_zip_path.exists():
                     temp_zip_path.unlink()
                 
@@ -563,9 +563,9 @@ def create_complete_toolkit(base_dir):
     #     print("Git environment setup successful")
     
     if success:
-        print("工具包创建成功")
+        print("Toolkit creation successful")
     else:
-        print("工具包创建失败")
+        print("Toolkit creation failed")
     
     return success
 
@@ -578,11 +578,11 @@ def download_and_setup_python_simple(toolkit_dir):
     lib_dir = toolkit_dir / "Lib"
     site_packages = lib_dir / "site-packages"
     
-    # 创建基本目录结构
+    # Create basic directory structure
     lib_dir.mkdir(exist_ok=True)
     site_packages.mkdir(exist_ok=True)
     
-    # 创建基本的Python文件
+    # Create basic Python files
     basic_files = [
         ("python.exe", "# Python executable placeholder"),
         ("python39.dll", "# Python DLL placeholder"),
