@@ -41,18 +41,23 @@ jobs:
       working-directory: ./webapp
       run: npm run compile
     
+    - name: Test simple script
+      run: |
+        Write-Host "运行简单测试脚本..."
+        python scripts/test-simple.py > test_simple_output.txt 2>&1
+        if ($LASTEXITCODE -ne 0) {
+          Write-Host "警告: 简单测试失败"
+          Write-Host "输出内容:"
+          Get-Content test_simple_output.txt
+        } else {
+          Write-Host "简单测试成功"
+        }
+    
     - name: Add missing files
       run: |
         Write-Host "安装Python依赖和工具..."
         python -m pip install --upgrade pip
         python -m pip install PyYAML
-        # 安装7z和wget工具
-        Write-Host "安装7z和wget工具..."
-        choco install 7zip wget -y
-        # 验证工具安装
-        Write-Host "验证工具安装..."
-        7z --help
-        wget --version
         Write-Host "添加缺失的项目文件..."
         python scripts/add-missing-files.py > add_missing_files_output.txt 2>&1
         if ($LASTEXITCODE -ne 0) {
