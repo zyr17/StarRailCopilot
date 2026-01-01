@@ -44,7 +44,6 @@ jobs:
       run: npm run compile
     
     - name: Add missing files
-      working-directory: ./webapp
       run: |
         Write-Host "添加缺失的项目文件..."
         python scripts/add-missing-files.py
@@ -53,10 +52,9 @@ jobs:
         }
     
     - name: Validate build
-      working-directory: ./webapp
       run: |
         Write-Host "验证构建质量..."
-        python ../validate_build.py dist/win-unpacked
+        python validate_build.py webapp/dist/win-unpacked
         if ($LASTEXITCODE -ne 0) {
           Write-Host "警告: 验证发现问题"
         }
