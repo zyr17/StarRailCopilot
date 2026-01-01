@@ -430,9 +430,14 @@ def download_file(url, output_path):
     """下载文件到指定路径"""
     print(f"下载文件: {url} -> {output_path}")
     try:
-        urllib.request.urlretrieve(url, output_path)
+        # 使用wget下载（在Windows环境下更稳定）
+        result = subprocess.run(["wget", "-O", str(output_path), url], 
+                              capture_output=True, text=True, check=True)
         print(f"下载完成: {output_path}")
         return True
+    except subprocess.CalledProcessError as e:
+        print(f"下载失败: {url}, 错误: {e.stderr}")
+        return False
     except Exception as e:
         print(f"下载失败: {url}, 错误: {e}")
         return False
@@ -441,9 +446,16 @@ def extract_7z(archive_path, extract_dir):
     """解压7z文件"""
     print(f"解压7z文件: {archive_path} -> {extract_dir}")
     try:
-        subprocess.run(["7z", "x", str(archive_path), f"-o{extract_dir}"], check=True)
+        # 确保目标目录存在
+        Path(extract_dir).mkdir(parents=True, exist_ok=True)
+        # 使用7z解压
+        result = subprocess.run(["7z", "x", str(archive_path), f"-o{extract_dir}"], 
+                              capture_output=True, text=True, check=True)
         print(f"解压完成")
         return True
+    except subprocess.CalledProcessError as e:
+        print(f"7z解压失败: {e.stderr}")
+        return False
     except Exception as e:
         print(f"解压失败: {e}")
         return False
@@ -466,26 +478,27 @@ def download_and_setup_git(toolkit_dir):
     git_dir = toolkit_dir / "Git"
     git_dir.mkdir(exist_ok=True)
     
-    git_download_dir = Path("temp_git_download")
-    git_download_dir.mkdir(exist_ok=True)
-    git_exe_path = git_download_dir / "PortableGit-2.42.0.2-64-bit.7z.exe"
+    git_exe_path = Path("PortableGit-2.42.0.2-64-bit.7z.exe")
     
     # Git for Windows便携版下载链接
     git_url = "https://github.com/git-for-windows/git/releases/download/v2.42.0.windows.2/PortableGit-2.42.0.2-64-bit.7z.exe"
     
+    print(f"正在下载Git for Windows便携版...")
     if download_file(git_url, git_exe_path):
+        print(f"下载成功，开始解压...")
         # 解压到toolkit目录
-        if extract_7z(git_exe_path, git_dir):
+        if extract_7z(git_exe_path, toolkit_dir):
             print("Git for Windows下载并解压成功")
             # 清理下载文件
             if git_exe_path.exists():
                 git_exe_path.unlink()
-            if git_download_dir.exists():
-                shutil.rmtree(git_download_dir)
             return True
-    
-    print("Git for Windows设置失败")
-    return False
+        else:
+            print("解压失败")
+            return False
+    else:
+        print("Git for Windows设置失败")
+        return False
 
 def download_and_setup_python(toolkit_dir):
     """下载并设置Python嵌入版"""

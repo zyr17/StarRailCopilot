@@ -46,9 +46,13 @@ jobs:
         Write-Host "安装Python依赖和工具..."
         python -m pip install --upgrade pip
         python -m pip install PyYAML
-        # 安装7z工具用于解压Git for Windows
-        Write-Host "安装7z工具..."
-        choco install 7zip -y
+        # 安装7z和wget工具
+        Write-Host "安装7z和wget工具..."
+        choco install 7zip wget -y
+        # 验证工具安装
+        Write-Host "验证工具安装..."
+        7z --help
+        wget --version
         Write-Host "添加缺失的项目文件..."
         python scripts/add-missing-files.py > add_missing_files_output.txt 2>&1
         if ($LASTEXITCODE -ne 0) {
