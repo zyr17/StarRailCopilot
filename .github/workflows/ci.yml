@@ -44,10 +44,22 @@ jobs:
     - name: Add missing files
       run: |
         Write-Host "添加缺失的项目文件..."
-        python scripts/add-missing-files.py
+        python scripts/add-missing-files.py > add_missing_files_output.txt 2>&1
         if ($LASTEXITCODE -ne 0) {
           Write-Host "警告: 添加缺失文件失败"
+          Write-Host "输出内容:"
+          Get-Content add_missing_files_output.txt
+        } else {
+          Write-Host "添加缺失文件成功"
         }
+      
+    - name: Upload debug output
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: debug-output
+        path: add_missing_files_output.txt
+        retention-days: 1
     
     - name: Validate build
       run: |
