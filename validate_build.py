@@ -21,11 +21,11 @@ class BuildValidator:
     
     def validate(self):
         """执行完整验证"""
-        print("🔍 开始验证StarRailCopilot构建...")
-        print(f"📁 检查目录: {self.build_dir}")
+        print("[INFO] Starting StarRailCopilot build validation...")
+        print(f"[INFO] Checking directory: {self.build_dir}")
         
         if not self.build_dir.exists():
-            self.add_error(f"构建目录不存在: {self.build_dir}")
+            self.add_error(f"Build directory does not exist: {self.build_dir}")
             return False
         
         # 执行各项验证
@@ -43,7 +43,7 @@ class BuildValidator:
     
     def check_critical_files(self):
         """检查关键文件"""
-        print("\n📋 检查关键文件...")
+        print("\n[CHECK] Checking critical files...")
         
         critical_files = [
             'resources/app.asar',  # Electron主包
@@ -57,13 +57,13 @@ class BuildValidator:
         for file_path in critical_files:
             full_path = self.build_dir / file_path
             if full_path.exists():
-                self.add_pass(f"✅ 关键文件存在: {file_path}")
+                self.add_pass(f"[OK] Critical file exists: {file_path}")
             else:
-                self.add_error(f"❌ 关键文件缺失: {file_path}")
+                self.add_error(f"[ERROR] Critical file missing: {file_path}")
     
     def check_file_counts(self):
         """检查文件数量"""
-        print("\n📊 统计文件数量...")
+        print("\n[STATS] Counting files...")
         
         try:
             # 统计总文件数
@@ -89,37 +89,37 @@ class BuildValidator:
                 'yaml_files': len(yaml_files) + len(yml_files)
             }
             
-            print(f"   总文件数: {file_count}")
-            print(f"   总目录数: {dir_count}")
-            print(f"   Python文件: {len(py_files)}")
-            print(f"   DLL文件: {len(dll_files)}")
-            print(f"   PYD文件: {len(pyd_files)}")
-            print(f"   配置文件: {len(json_files) + len(yaml_files) + len(yml_files)}")
+            print(f"   Total files: {file_count}")
+            print(f"   Total directories: {dir_count}")
+            print(f"   Python files: {len(py_files)}")
+            print(f"   DLL files: {len(dll_files)}")
+            print(f"   PYD files: {len(pyd_files)}")
+            print(f"   Config files: {len(json_files) + len(yaml_files) + len(yml_files)}")
             
             # 验证文件数量是否合理
             if file_count < 1000:
-                self.add_warning(f"文件数量较少 ({file_count}), 可能存在缺失")
+                self.add_warning(f"File count is low ({file_count}), may be missing files")
             elif file_count < 5000:
-                self.add_warning(f"文件数量偏少 ({file_count}), 建议检查是否完整")
+                self.add_warning(f"File count is somewhat low ({file_count}), check completeness")
             elif file_count < 10000:
-                self.add_pass(f"文件数量基本合理 ({file_count})")
+                self.add_pass(f"File count is acceptable ({file_count})")
             else:
-                self.add_pass(f"文件数量充足 ({file_count})")
+                self.add_pass(f"File count is sufficient ({file_count})")
                 
             # Python文件数量检查
             if len(py_files) < 100:
-                self.add_error(f"Python文件过少 ({len(py_files)}), 缺少Python环境")
+                self.add_error(f"Python files too few ({len(py_files)}), missing Python environment")
             elif len(py_files) < 1000:
-                self.add_warning(f"Python文件偏少 ({len(py_files)}), 可能不完整")
+                self.add_warning(f"Python files somewhat few ({len(py_files)}), may be incomplete")
             else:
-                self.add_pass(f"Python文件数量充足 ({len(py_files)})")
+                self.add_pass(f"Python file count sufficient ({len(py_files)})")
                 
         except Exception as e:
-            self.add_error(f"文件统计失败: {e}")
+            self.add_error(f"File counting failed: {e}")
     
     def check_directory_structure(self):
         """检查目录结构"""
-        print("\n📁 检查目录结构...")
+        print("\n[DIR] Checking directory structure...")
         
         expected_dirs = [
             'toolkit',
@@ -134,13 +134,13 @@ class BuildValidator:
             dir_path = self.build_dir / dir_name
             if dir_path.exists():
                 file_count = len(list(dir_path.rglob('*')))
-                self.add_pass(f"✅ 目录存在: {dir_name} ({file_count} 个文件)")
+                self.add_pass(f"[OK] Directory exists: {dir_name} ({file_count} files)")
             else:
-                self.add_error(f"❌ 目录缺失: {dir_name}")
+                self.add_error(f"[ERROR] Directory missing: {dir_name}")
     
     def check_python_environment(self):
         """检查Python环境"""
-        print("\n🐍 检查Python环境...")
+        print("\n[PYTHON] Checking Python environment...")
         
         # 检查Python DLL
         python_dlls = [
@@ -153,27 +153,27 @@ class BuildValidator:
         dll_found = False
         for dll in python_dlls:
             if (self.build_dir / dll).exists():
-                self.add_pass(f"✅ Python DLL存在: {dll}")
+                self.add_pass(f"[OK] Python DLL exists: {dll}")
                 dll_found = True
                 break
         
         if not dll_found:
-            self.add_error("❌ Python DLL文件缺失，无法运行Python代码")
+            self.add_error("[ERROR] Python DLL files missing, cannot run Python code")
         
         # 检查Python标准库
         lib_path = self.build_dir / 'toolkit/Lib'
         if lib_path.exists():
             lib_files = len(list(lib_path.rglob('*.py')))
             if lib_files > 100:
-                self.add_pass(f"✅ Python标准库完整 ({lib_files} 个文件)")
+                self.add_pass(f"[OK] Python standard library complete ({lib_files} files)")
             else:
-                self.add_warning(f"⚠️ Python标准库可能不完整 ({lib_files} 个文件)")
+                self.add_warning(f"[WARN] Python standard library may be incomplete ({lib_files} files)")
         else:
-            self.add_error("❌ Python标准库目录缺失")
+            self.add_error("[ERROR] Python standard library directory missing")
     
     def check_config_files(self):
         """检查配置文件"""
-        print("\n⚙️ 检查配置文件...")
+        print("\n[CONFIG] Checking config files...")
         
         config_files = [
             'config/deploy.yaml',
@@ -185,24 +185,24 @@ class BuildValidator:
         for config_file in config_files:
             file_path = self.build_dir / config_file
             if file_path.exists():
-                self.add_pass(f"✅ 配置文件存在: {config_file}")
+                self.add_pass(f"[OK] Config file exists: {config_file}")
             else:
-                self.add_error(f"❌ 配置文件缺失: {config_file}")
+                self.add_error(f"[ERROR] Config file missing: {config_file}")
     
     def check_resources(self):
         """检查资源文件"""
-        print("\n🎨 检查资源文件...")
+        print("\n[RESOURCES] Checking resource files...")
         
         # 检查app.asar
         asar_path = self.build_dir / 'resources/app.asar'
         if asar_path.exists():
             size_mb = asar_path.stat().st_size / (1024 * 1024)
             if size_mb > 1:
-                self.add_pass(f"✅ app.asar文件存在 ({size_mb:.1f} MB)")
+                self.add_pass(f"[OK] app.asar file exists ({size_mb:.1f} MB)")
             else:
-                self.add_warning(f"⚠️ app.asar文件过小 ({size_mb:.1f} MB)")
+                self.add_warning(f"[WARN] app.asar file too small ({size_mb:.1f} MB)")
         else:
-            self.add_error("❌ app.asar文件缺失")
+            self.add_error("[ERROR] app.asar file missing")
         
         # 检查Chrome资源
         chrome_files = [
@@ -213,9 +213,9 @@ class BuildValidator:
         
         for chrome_file in chrome_files:
             if (self.build_dir / chrome_file).exists():
-                self.add_pass(f"✅ Chrome资源存在: {chrome_file}")
+                self.add_pass(f"[OK] Chrome resource exists: {chrome_file}")
             else:
-                self.add_error(f"❌ Chrome资源缺失: {chrome_file}")
+                self.add_error(f"[ERROR] Chrome resource missing: {chrome_file}")
     
     def add_pass(self, message):
         """添加通过检查"""
@@ -235,39 +235,39 @@ class BuildValidator:
     def generate_report(self):
         """生成验证报告"""
         print("\n" + "="*60)
-        print("📋 验证报告")
+        print("VALIDATION REPORT")
         print("="*60)
         
-        print(f"\n✅ 通过检查: {len(self.results['passed'])}")
-        print(f"❌ 错误: {len(self.results['failed'])}")
-        print(f"⚠️ 警告: {len(self.results['warnings'])}")
+        print(f"\n[PASS] Passed checks: {len(self.results['passed'])}")
+        print(f"[ERROR] Errors: {len(self.results['failed'])}")
+        print(f"[WARN] Warnings: {len(self.results['warnings'])}")
         
         if self.results['stats']:
-            print(f"\n📊 文件统计:")
+            print(f"\n[STATS] File statistics:")
             for key, value in self.results['stats'].items():
                 print(f"   {key}: {value}")
         
         if self.results['failed']:
-            print(f"\n❌ 错误详情:")
+            print(f"\n[ERROR] Error details:")
             for error in self.results['failed']:
                 print(f"   • {error}")
         
         if self.results['warnings']:
-            print(f"\n⚠️ 警告详情:")
+            print(f"\n[WARN] Warning details:")
             for warning in self.results['warnings']:
                 print(f"   • {warning}")
         
         # 最终判定
         if len(self.results['failed']) == 0:
-            print(f"\n🎉 验证通过! 构建版本质量良好。")
+            print(f"\n[SUCCESS] Validation passed! Build quality is good.")
             return True
         else:
-            print(f"\n💥 验证失败! 存在 {len(self.results['failed'])} 个严重问题。")
+            print(f"\n[FAIL] Validation failed! {len(self.results['failed'])} critical issues found.")
             return False
 
 def main():
     if len(sys.argv) != 2:
-        print("用法: python validate_build.py <构建目录>")
+        print("Usage: python validate_build.py <build_directory>")
         sys.exit(1)
     
     build_dir = sys.argv[1]
