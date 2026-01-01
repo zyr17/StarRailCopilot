@@ -260,11 +260,11 @@ def main():
         create_readme_files(base_dir)
         create_toolkit_structure(base_dir)
         
-        print("✅ Missing files added successfully!")
+        print("[SUCCESS] Missing files added successfully!")
         return 0
         
     except Exception as e:
-        print(f"❌ Failed to add missing files: {e}")
+        print(f"[ERROR] Failed to add missing files: {e}")
         import traceback
         traceback.print_exc()
         return 1
