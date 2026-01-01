@@ -9,6 +9,9 @@ import sys
 import shutil
 import json
 import yaml
+import subprocess
+import urllib.request
+import zipfile
 from pathlib import Path
 
 def create_config_files(base_dir):
@@ -423,6 +426,128 @@ This directory contains application assets:
     with open(assets_dir / "README.md", 'w', encoding='utf-8') as f:
         f.write(readme_content)
 
+def download_file(url, output_path):
+    """下载文件到指定路径"""
+    print(f"下载文件: {url} -> {output_path}")
+    try:
+        urllib.request.urlretrieve(url, output_path)
+        print(f"下载完成: {output_path}")
+        return True
+    except Exception as e:
+        print(f"下载失败: {url}, 错误: {e}")
+        return False
+
+def extract_7z(archive_path, extract_dir):
+    """解压7z文件"""
+    print(f"解压7z文件: {archive_path} -> {extract_dir}")
+    try:
+        subprocess.run(["7z", "x", str(archive_path), f"-o{extract_dir}"], check=True)
+        print(f"解压完成")
+        return True
+    except Exception as e:
+        print(f"解压失败: {e}")
+        return False
+
+def extract_zip(archive_path, extract_dir):
+    """解压zip文件"""
+    print(f"解压zip文件: {archive_path} -> {extract_dir}")
+    try:
+        with zipfile.ZipFile(archive_path, 'r') as zip_ref:
+            zip_ref.extractall(extract_dir)
+        print(f"解压完成")
+        return True
+    except Exception as e:
+        print(f"解压失败: {e}")
+        return False
+
+def download_and_setup_git(toolkit_dir):
+    """下载并设置Git for Windows"""
+    print("=== 开始下载Git for Windows ===")
+    git_dir = toolkit_dir / "Git"
+    git_dir.mkdir(exist_ok=True)
+    
+    git_download_dir = Path("temp_git_download")
+    git_download_dir.mkdir(exist_ok=True)
+    git_exe_path = git_download_dir / "PortableGit-2.42.0.2-64-bit.7z.exe"
+    
+    # Git for Windows便携版下载链接
+    git_url = "https://github.com/git-for-windows/git/releases/download/v2.42.0.windows.2/PortableGit-2.42.0.2-64-bit.7z.exe"
+    
+    if download_file(git_url, git_exe_path):
+        # 解压到toolkit目录
+        if extract_7z(git_exe_path, git_dir):
+            print("Git for Windows下载并解压成功")
+            # 清理下载文件
+            if git_exe_path.exists():
+                git_exe_path.unlink()
+            if git_download_dir.exists():
+                shutil.rmtree(git_download_dir)
+            return True
+    
+    print("Git for Windows设置失败")
+    return False
+
+def download_and_setup_python(toolkit_dir):
+    """下载并设置Python嵌入版"""
+    print("=== 开始下载Python嵌入版 ===")
+    python_exe_path = toolkit_dir / "python.exe"
+    python_dll_path = toolkit_dir / "python39.dll"
+    lib_dir = toolkit_dir / "Lib"
+    
+    # Python嵌入版下载链接
+    python_url = "https://www.python.org/ftp/python/3.9.13/python-3.9.13-embed-amd64.zip"
+    temp_zip_path = Path("temp_python.zip")
+    
+    if download_file(python_url, temp_zip_path):
+        if extract_zip(temp_zip_path, toolkit_dir):
+            # 安装pip和依赖
+            pip_install_cmd = f'"{python_exe_path}" -m pip install --upgrade pip'
+            try:
+                subprocess.run(pip_install_cmd.split(), check=True, cwd=str(toolkit_dir))
+                print("pip升级成功")
+                
+                # 安装requirements.txt中的依赖
+                if Path("requirements.txt").exists():
+                    install_cmd = f'"{python_exe_path}" -m pip install -r ../requirements.txt'
+                    subprocess.run(install_cmd.split(), check=True, cwd=str(toolkit_dir))
+                    print("Python依赖安装成功")
+                
+                # 清理临时文件
+                if temp_zip_path.exists():
+                    temp_zip_path.unlink()
+                
+                return True
+                
+            except subprocess.CalledProcessError as e:
+                print(f"Python依赖安装失败: {e}")
+                return False
+    
+    print("Python嵌入版设置失败")
+    return False
+
+def create_complete_toolkit(base_dir):
+    """创建完整的工具包环境"""
+    print("=== 开始创建完整工具包 ===")
+    toolkit_dir = base_dir / "toolkit"
+    toolkit_dir.mkdir(exist_ok=True)
+    
+    success = True
+    
+    # 下载并设置Git
+    if not download_and_setup_git(toolkit_dir):
+        success = False
+    
+    # 下载并设置Python
+    if not download_and_setup_python(toolkit_dir):
+        success = False
+    
+    if success:
+        print("完整工具包创建成功")
+    else:
+        print("工具包创建部分失败")
+    
+    return success
+
 def main():
     """Main function"""
     # In GitHub Actions, script is called from root directory
@@ -448,15 +573,21 @@ def main():
     print(f"Adding missing files to: {base_dir}")
     
     try:
-        # 创建各种目录和文件
+        # 创建基本配置文件和目录
         create_config_files(base_dir)
         create_deploy_files(base_dir) 
         create_readme_files(base_dir)
-        create_toolkit_structure(base_dir)
         create_assets_structure(base_dir)
         
-        print("[SUCCESS] Missing files added successfully!")
-        return 0
+        # 创建完整的工具包环境
+        toolkit_success = create_complete_toolkit(base_dir)
+        
+        if toolkit_success:
+            print("[SUCCESS] Missing files and toolkit added successfully!")
+            return 0
+        else:
+            print("[WARNING] Missing files added, but toolkit setup had issues")
+            return 0  # 返回0，因为基本文件创建成功了
         
     except Exception as e:
         print(f"[ERROR] Failed to add missing files: {e}")
