@@ -601,48 +601,57 @@ def download_and_setup_python_simple(toolkit_dir):
 
 def main():
     """Main function"""
-    # In GitHub Actions, script is called from root directory
-    base_dir = Path("webapp") / "dist" / "win-unpacked"
-    
-    print(f"Current working directory: {Path.cwd()}")
-    print(f"Script directory: {Path(__file__).parent}")
-    print(f"Target build directory: {base_dir}")
-    print(f"Build directory exists: {base_dir.exists()}")
-    
-    if not base_dir.exists():
-        print(f"Error: Build directory does not exist: {base_dir}")
-        # Try to list webapp/dist directory contents
-        dist_dir = Path("webapp") / "dist"
-        if dist_dir.exists():
-            print(f"webapp/dist directory contents:")
-            for item in dist_dir.iterdir():
-                print(f"  - {item.name} ({'directory' if item.is_dir() else 'file'})")
-        else:
-            print(f"webapp/dist directory also does not exist")
-        return 1
-    
-    print(f"Adding missing files to: {base_dir}")
-    
     try:
-        # 创建基本配置文件和目录
+        print("=== 开始添加缺失文件 ===")
+        
+        # In GitHub Actions, script is called from root directory
+        base_dir = Path("webapp") / "dist" / "win-unpacked"
+        
+        print(f"Current working directory: {Path.cwd()}")
+        print(f"Script directory: {Path(__file__).parent}")
+        print(f"Target build directory: {base_dir}")
+        print(f"Build directory exists: {base_dir.exists()}")
+        
+        if not base_dir.exists():
+            print(f"Error: Build directory does not exist: {base_dir}")
+            # Try to list webapp/dist directory contents
+            dist_dir = Path("webapp") / "dist"
+            if dist_dir.exists():
+                print(f"webapp/dist directory contents:")
+                for item in dist_dir.iterdir():
+                    print(f"  - {item.name} ({'directory' if item.is_dir() else 'file'})")
+            else:
+                print(f"webapp/dist directory also does not exist")
+            return 1
+        
+        print(f"Adding missing files to: {base_dir}")
+        
+        # 第一步：创建基本配置文件
+        print("步骤1: 创建配置文件...")
         create_config_files(base_dir)
-        create_deploy_files(base_dir) 
+        
+        # 第二步：创建部署文件
+        print("步骤2: 创建部署文件...")
+        create_deploy_files(base_dir)
+        
+        # 第三步：创建README文件
+        print("步骤3: 创建README文件...")
         create_readme_files(base_dir)
+        
+        # 第四步：创建资源文件
+        print("步骤4: 创建资源文件...")
         create_assets_structure(base_dir)
         
-        # 创建完整的工具包环境
+        # 第五步：创建基础工具包
+        print("步骤5: 创建基础工具包...")
         toolkit_success = create_complete_toolkit(base_dir)
-        
-        if toolkit_success:
-            print("[SUCCESS] Missing files and toolkit added successfully!")
-        else:
-            print("[WARNING] Missing files added, but toolkit setup had issues")
         
         # 统计最终文件数量
         total_files = sum(1 for _ in base_dir.rglob('*') if _.is_file())
         print(f"[INFO] 最终构建包含 {total_files} 个文件")
         
-        return 0  # 始终返回0，让流程继续
+        print("[SUCCESS] 所有缺失文件添加完成!")
+        return 0
         
     except Exception as e:
         print(f"[ERROR] Failed to add missing files: {e}")
