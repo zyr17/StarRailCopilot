@@ -231,7 +231,8 @@ def create_toolkit_structure(base_dir):
 
 def main():
     """主函数"""
-    base_dir = Path(__file__).parent.parent / "webapp" / "dist" / "win-unpacked"
+    # 在GitHub Actions中，脚本从根目录调用
+    base_dir = Path("webapp") / "dist" / "win-unpacked"
     
     if not base_dir.exists():
         print(f"错误: 构建目录不存在: {base_dir}")
