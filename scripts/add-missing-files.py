@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-添加缺失文件脚本
-在Electron构建后添加必要的项目文件
+Add missing files script
+Adds necessary project files after Electron build
 """
 
 import os
@@ -12,7 +12,7 @@ import yaml
 from pathlib import Path
 
 def create_config_files(base_dir):
-    """创建配置文件"""
+    """Create configuration files"""
     config_dir = base_dir / "config"
     config_dir.mkdir(exist_ok=True)
     
@@ -61,7 +61,7 @@ def create_config_files(base_dir):
         json.dump(template_config, f, indent=2, ensure_ascii=False)
 
 def create_deploy_files(base_dir):
-    """创建部署文件"""
+    """Create deployment files"""
     deploy_dir = base_dir / "deploy"
     deploy_dir.mkdir(exist_ok=True)
     
@@ -170,7 +170,7 @@ def check_adb():
             f.write(script_content)
 
 def create_readme_files(base_dir):
-    """创建README文件"""
+    """Create README files"""
     # deploy/Readme.md
     readme_content = """# StarRailCopilot部署指南
 
@@ -202,7 +202,7 @@ def create_readme_files(base_dir):
         f.write(readme_content)
 
 def create_toolkit_structure(base_dir):
-    """创建toolkit目录结构（模拟Python环境）"""
+    """Create toolkit directory structure (simulate Python environment)"""
     toolkit_dir = base_dir / "toolkit"
     toolkit_dir.mkdir(exist_ok=True)
     
@@ -230,28 +230,28 @@ def create_toolkit_structure(base_dir):
             f.write(f"# {module} - Python standard library mock\n")
 
 def main():
-    """主函数"""
-    # 在GitHub Actions中，脚本从根目录调用
+    """Main function"""
+    # In GitHub Actions, script is called from root directory
     base_dir = Path("webapp") / "dist" / "win-unpacked"
     
-    print(f"当前工作目录: {Path.cwd()}")
-    print(f"脚本所在目录: {Path(__file__).parent}")
-    print(f"目标构建目录: {base_dir}")
-    print(f"构建目录是否存在: {base_dir.exists()}")
+    print(f"Current working directory: {Path.cwd()}")
+    print(f"Script directory: {Path(__file__).parent}")
+    print(f"Target build directory: {base_dir}")
+    print(f"Build directory exists: {base_dir.exists()}")
     
     if not base_dir.exists():
-        print(f"错误: 构建目录不存在: {base_dir}")
-        # 尝试列出webapp/dist目录的内容
+        print(f"Error: Build directory does not exist: {base_dir}")
+        # Try to list webapp/dist directory contents
         dist_dir = Path("webapp") / "dist"
         if dist_dir.exists():
-            print(f"webapp/dist目录内容:")
+            print(f"webapp/dist directory contents:")
             for item in dist_dir.iterdir():
-                print(f"  - {item.name} ({'目录' if item.is_dir() else '文件'})")
+                print(f"  - {item.name} ({'directory' if item.is_dir() else 'file'})")
         else:
-            print(f"webapp/dist目录也不存在")
+            print(f"webapp/dist directory also does not exist")
         return 1
     
-    print(f"正在添加缺失文件到: {base_dir}")
+    print(f"Adding missing files to: {base_dir}")
     
     try:
         # 创建各种目录和文件
@@ -260,11 +260,11 @@ def main():
         create_readme_files(base_dir)
         create_toolkit_structure(base_dir)
         
-        print("✅ 缺失文件添加完成!")
+        print("✅ Missing files added successfully!")
         return 0
         
     except Exception as e:
-        print(f"❌ 添加缺失文件失败: {e}")
+        print(f"❌ Failed to add missing files: {e}")
         import traceback
         traceback.print_exc()
         return 1
