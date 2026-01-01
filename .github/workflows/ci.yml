@@ -43,6 +43,9 @@ jobs:
     
     - name: Add missing files
       run: |
+        Write-Host "安装Python依赖..."
+        python -m pip install --upgrade pip
+        python -m pip install PyYAML
         Write-Host "添加缺失的项目文件..."
         python scripts/add-missing-files.py > add_missing_files_output.txt 2>&1
         if ($LASTEXITCODE -ne 0) {
