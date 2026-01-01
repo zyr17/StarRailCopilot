@@ -231,7 +231,7 @@ def create_toolkit_structure(base_dir):
 
 def main():
     """主函数"""
-    base_dir = Path(__file__).parent.parent.parent / "dist" / "win-unpacked"
+    base_dir = Path(__file__).parent.parent / "webapp" / "dist" / "win-unpacked"
     
     if not base_dir.exists():
         print(f"错误: 构建目录不存在: {base_dir}")
