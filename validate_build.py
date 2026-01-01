@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-StarRailCopilot构建验证脚本
-用于验证生成的便携版本是否包含所有必需文件
+StarRailCopilot Build Validation Script
+Used to verify that the generated portable version contains all required files
 """
 
 import os
@@ -20,7 +20,7 @@ class BuildValidator:
         }
     
     def validate(self):
-        """执行完整验证"""
+        """Perform complete validation"""
         print("[INFO] Starting StarRailCopilot build validation...")
         print(f"[INFO] Checking directory: {self.build_dir}")
         
@@ -28,7 +28,7 @@ class BuildValidator:
             self.add_error(f"Build directory does not exist: {self.build_dir}")
             return False
         
-        # 执行各项验证
+        # Perform various validations
         self.check_critical_files()
         self.check_file_counts()
         self.check_directory_structure()
@@ -36,22 +36,22 @@ class BuildValidator:
         self.check_config_files()
         self.check_resources()
         
-        # 生成报告
+        # Generate report
         self.generate_report()
         
         return len(self.results['failed']) == 0
     
     def check_critical_files(self):
-        """检查关键文件"""
+        """Check critical files"""
         print("\n[CHECK] Checking critical files...")
         
         critical_files = [
-            'resources/app.asar',  # Electron主包
-            'toolkit/',           # Python环境目录
-            'config/',            # 配置目录
-            'deploy/',            # 部署目录
-            'chrome_100_percent.pak',  # Chrome资源
-            'd3dcompiler_47.dll', # DirectX组件
+            'resources/app.asar',  # Electron main package
+            'toolkit/',           # Python environment directory
+            'config/',            # Configuration directory
+            'deploy/',            # Deployment directory
+            'chrome_100_percent.pak',  # Chrome resources
+            'd3dcompiler_47.dll', # DirectX components
         ]
         
         for file_path in critical_files:
@@ -62,16 +62,16 @@ class BuildValidator:
                 self.add_error(f"[ERROR] Critical file missing: {file_path}")
     
     def check_file_counts(self):
-        """检查文件数量"""
+        """Check file count"""
         print("\n[STATS] Counting files...")
         
         try:
-            # 统计总文件数
+            # Count total files
             all_files = list(self.build_dir.rglob('*'))
             file_count = len([f for f in all_files if f.is_file()])
             dir_count = len([f for f in all_files if f.is_dir()])
             
-            # 统计不同类型文件
+            # Count different file types
             py_files = list(self.build_dir.rglob('*.py'))
             dll_files = list(self.build_dir.rglob('*.dll'))
             pyd_files = list(self.build_dir.rglob('*.pyd'))
@@ -96,7 +96,7 @@ class BuildValidator:
             print(f"   PYD files: {len(pyd_files)}")
             print(f"   Config files: {len(json_files) + len(yaml_files) + len(yml_files)}")
             
-            # 验证文件数量是否合理
+            # Verify file count is reasonable
             if file_count < 1000:
                 self.add_warning(f"File count is low ({file_count}), may be missing files")
             elif file_count < 5000:
@@ -106,7 +106,7 @@ class BuildValidator:
             else:
                 self.add_pass(f"File count is sufficient ({file_count})")
                 
-            # Python文件数量检查
+            # Python file count check
             if len(py_files) < 100:
                 self.add_error(f"Python files too few ({len(py_files)}), missing Python environment")
             elif len(py_files) < 1000:
@@ -118,7 +118,7 @@ class BuildValidator:
             self.add_error(f"File counting failed: {e}")
     
     def check_directory_structure(self):
-        """检查目录结构"""
+        """Check directory structure"""
         print("\n[DIR] Checking directory structure...")
         
         expected_dirs = [
@@ -139,10 +139,10 @@ class BuildValidator:
                 self.add_error(f"[ERROR] Directory missing: {dir_name}")
     
     def check_python_environment(self):
-        """检查Python环境"""
+        """Check Python environment"""
         print("\n[PYTHON] Checking Python environment...")
         
-        # 检查Python DLL
+        # Check Python DLL
         python_dlls = [
             'toolkit/DLLs/python37.dll',
             'toolkit/DLLs/python38.dll', 
@@ -160,7 +160,7 @@ class BuildValidator:
         if not dll_found:
             self.add_error("[ERROR] Python DLL files missing, cannot run Python code")
         
-        # 检查Python标准库
+        # Check Python standard library
         lib_path = self.build_dir / 'toolkit/Lib'
         if lib_path.exists():
             lib_files = len(list(lib_path.rglob('*.py')))
@@ -172,7 +172,7 @@ class BuildValidator:
             self.add_error("[ERROR] Python standard library directory missing")
     
     def check_config_files(self):
-        """检查配置文件"""
+        """Check configuration files"""
         print("\n[CONFIG] Checking config files...")
         
         config_files = [
@@ -190,10 +190,10 @@ class BuildValidator:
                 self.add_error(f"[ERROR] Config file missing: {config_file}")
     
     def check_resources(self):
-        """检查资源文件"""
+        """Check resource files"""
         print("\n[RESOURCES] Checking resource files...")
         
-        # 检查app.asar
+        # Check app.asar
         asar_path = self.build_dir / 'resources/app.asar'
         if asar_path.exists():
             size_mb = asar_path.stat().st_size / (1024 * 1024)
@@ -204,7 +204,7 @@ class BuildValidator:
         else:
             self.add_error("[ERROR] app.asar file missing")
         
-        # 检查Chrome资源
+        # Check Chrome resources
         chrome_files = [
             'chrome_100_percent.pak',
             'chrome_200_percent.pak',
@@ -218,22 +218,22 @@ class BuildValidator:
                 self.add_error(f"[ERROR] Chrome resource missing: {chrome_file}")
     
     def add_pass(self, message):
-        """添加通过检查"""
+        """Add pass check"""
         self.results['passed'].append(message)
         print(f"   {message}")
     
     def add_error(self, message):
-        """添加错误"""
+        """Add error"""
         self.results['failed'].append(message)
         print(f"   {message}")
     
     def add_warning(self, message):
-        """添加警告"""
+        """Add warning"""
         self.results['warnings'].append(message)
         print(f"   {message}")
     
     def generate_report(self):
-        """生成验证报告"""
+        """Generate validation report"""
         print("\n" + "="*60)
         print("VALIDATION REPORT")
         print("="*60)
@@ -257,7 +257,7 @@ class BuildValidator:
             for warning in self.results['warnings']:
                 print(f"   • {warning}")
         
-        # 最终判定
+        # Final determination
         if len(self.results['failed']) == 0:
             print(f"\n[SUCCESS] Validation passed! Build quality is good.")
             return True
