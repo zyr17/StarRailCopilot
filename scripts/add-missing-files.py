@@ -145,7 +145,7 @@ from pathlib import Path
 
 def find_game_path():
     """查找游戏路径"""
-    # 查找StarRail游戏安装路径
+    # Find StarRail game installation path
     possible_paths = [
         r"C:\\Program Files\\StarRail",
         r"D:\\StarRail", 
@@ -158,7 +158,7 @@ def find_game_path():
     return None
 
 def check_adb():
-    """检查ADB连接"""
+    """Check ADB connection"""
     try:
         import subprocess
         result = subprocess.run(['adb', 'devices'], capture_output=True, text=True)
@@ -169,7 +169,7 @@ def check_adb():
     }
     
     for script_name, script_content in scripts.items():
-        # 将脚本文件同时放在deploy根目录和Windows子目录中
+        # Write script files to both deploy root directory and Windows subdirectory
         with open(deploy_dir / script_name, 'w', encoding='utf-8') as f:
             f.write(script_content)
         with open(windows_dir / script_name, 'w', encoding='utf-8') as f:
@@ -178,25 +178,25 @@ def check_adb():
 def create_readme_files(base_dir):
     """Create README files"""
     # deploy/Readme.md
-    readme_content = """# StarRailCopilot部署指南
+    readme_content = """# StarRailCopilot Deployment Guide
 
-## 安装
+## Installation
 
-1. 下载便携版本
-2. 解压到任意目录
-3. 双击src.exe启动
+1. Download portable version
+2. Extract to any directory
+3. Double-click src.exe to start
 
-## 配置
+## Configuration
 
-编辑config/deploy.yaml进行配置。
+Edit config/deploy.yaml for configuration.
 
-## 使用
+## Usage
 
-- 运行后连接到模拟器
-- 导入游戏配置文件
-- 开始自动化操作
+- Run and connect to emulator
+- Import game configuration file
+- Start automation
 
-## 故障排除
+## Troubleshooting
 
 For issues, please check:
 1. Whether ADB connection is normal
@@ -224,7 +224,7 @@ def create_toolkit_structure(base_dir):
     
     for dll in python_dlls:
         with open(dlls_dir / dll, 'wb') as f:
-            # 写入一些模拟的DLL数据
+            # Write some mock DLL data
             f.write(b'\x00' * 1024)  # 1KB mock DLL data
     
     # Create Lib directory  
@@ -444,25 +444,25 @@ def download_file(url, output_path):
 
 def extract_7z(archive_path, extract_dir):
     """Extract 7z file"""
-    print(f"解压7z文件: {archive_path} -> {extract_dir}")
+    print(f"Extracting 7z file: {archive_path} -> {extract_dir}")
     try:
         # 确保目标目录存在
         Path(extract_dir).mkdir(parents=True, exist_ok=True)
-        # 使用7z解压
+        # Use 7z for extraction
         result = subprocess.run(["7z", "x", str(archive_path), f"-o{extract_dir}"], 
                               capture_output=True, text=True, check=True)
         print(f"Extraction completed")
         return True
     except subprocess.CalledProcessError as e:
-        print(f"7z解压失败: {e.stderr}")
+        print(f"7z extraction failed: {e.stderr}")
         return False
     except Exception as e:
         print(f"Extraction failed: {e}")
         return False
 
 def extract_zip(archive_path, extract_dir):
-    """解压zip文件"""
-    print(f"解压zip文件: {archive_path} -> {extract_dir}")
+    """Extract zip file"""
+    print(f"Extracting zip file: {archive_path} -> {extract_dir}")
     try:
         with zipfile.ZipFile(archive_path, 'r') as zip_ref:
             zip_ref.extractall(extract_dir)
@@ -473,7 +473,7 @@ def extract_zip(archive_path, extract_dir):
         return False
 
 def download_and_setup_git(toolkit_dir):
-    """下载并设置Git for Windows"""
+    """Download and setup Git for Windows"""
     print("=== 开始下载Git for Windows ===")
     git_dir = toolkit_dir / "Git"
     git_dir.mkdir(exist_ok=True)
@@ -483,12 +483,12 @@ def download_and_setup_git(toolkit_dir):
     # Git for Windows便携版下载链接
     git_url = "https://github.com/git-for-windows/git/releases/download/v2.42.0.windows.2/PortableGit-2.42.0.2-64-bit.7z.exe"
     
-    print(f"正在下载Git for Windows便携版...")
+    print(f"Downloading Git for Windows portable version...")
     if download_file(git_url, git_exe_path):
-        print(f"下载成功，开始解压...")
+        print(f"Download successful, starting extraction...")
         # 解压到toolkit目录
         if extract_7z(git_exe_path, toolkit_dir):
-            print("Git for Windows下载并解压成功")
+            print("Git for Windows download and extraction successful")
             # 清理下载文件
             if git_exe_path.exists():
                 git_exe_path.unlink()
@@ -497,12 +497,12 @@ def download_and_setup_git(toolkit_dir):
             print("解压失败")
             return False
     else:
-        print("Git for Windows设置失败")
+        print("Git for Windows setup failed")
         return False
 
 def download_and_setup_python(toolkit_dir):
-    """下载并设置Python嵌入版"""
-    print("=== 开始下载Python嵌入版 ===")
+    """Download and setup Python embedded version"""
+    print("=== Starting to download Python embedded version ===")
     python_exe_path = toolkit_dir / "python.exe"
     python_dll_path = toolkit_dir / "python39.dll"
     lib_dir = toolkit_dir / "Lib"
@@ -519,11 +519,11 @@ def download_and_setup_python(toolkit_dir):
                 subprocess.run(pip_install_cmd.split(), check=True, cwd=str(toolkit_dir))
                 print("pip升级成功")
                 
-                # 安装requirements.txt中的依赖
+                # Install dependencies from requirements.txt
                 if Path("requirements.txt").exists():
                     install_cmd = f'"{python_exe_path}" -m pip install -r ../requirements.txt'
                     subprocess.run(install_cmd.split(), check=True, cwd=str(toolkit_dir))
-                    print("Python依赖安装成功")
+                    print("Python dependencies installation successful")
                 
                 # 清理临时文件
                 if temp_zip_path.exists():
@@ -532,35 +532,35 @@ def download_and_setup_python(toolkit_dir):
                 return True
                 
             except subprocess.CalledProcessError as e:
-                print(f"Python依赖安装失败: {e}")
+                print(f"Python dependencies installation failed: {e}")
                 return False
     
-    print("Python嵌入版设置失败")
+    print("Python embedded version setup failed")
     return False
 
 def create_complete_toolkit(base_dir):
-    """创建完整的工具包环境"""
-    print("=== 开始创建完整工具包 ===")
+    """Create complete toolkit environment"""
+    print("=== Starting to create complete toolkit ===")
     toolkit_dir = base_dir / "toolkit"
     toolkit_dir.mkdir(exist_ok=True)
     
     success = True
     
-    # 第一阶段：只设置Python（简化版本用于调试）
-    print("第一阶段：设置Python环境...")
+    # Phase 1: Setup Python only (simplified version for debugging)
+    print("Phase 1: Setting up Python environment...")
     if not download_and_setup_python_simple(toolkit_dir):
         success = False
-        print("Python环境设置失败")
+        print("Python environment setup failed")
     else:
-        print("Python环境设置成功")
+        print("Python environment setup successful")
     
-    # 第二阶段：设置Git（暂时跳过）
-    print("第二阶段：跳过Git设置（用于调试）")
+    # Phase 2: Setup Git (temporarily skipped for debugging)
+    print("Phase 2: Skipping Git setup (for debugging)")
     # if not download_and_setup_git(toolkit_dir):
     #     success = False
-    #     print("Git环境设置失败")
+    #     print("Git environment setup failed")
     # else:
-    #     print("Git环境设置成功")
+    #     print("Git environment setup successful")
     
     if success:
         print("工具包创建成功")
@@ -570,10 +570,10 @@ def create_complete_toolkit(base_dir):
     return success
 
 def download_and_setup_python_simple(toolkit_dir):
-    """简化的Python环境设置"""
-    print("=== 开始设置Python环境（简化版） ===")
+    """Simplified Python environment setup"""
+    print("=== Starting to setup Python environment (simplified version) ===")
     
-    # 直接创建Python目录结构（不下载）
+    # Directly create Python directory structure (no download)
     python_exe_path = toolkit_dir / "python.exe"
     lib_dir = toolkit_dir / "Lib"
     site_packages = lib_dir / "site-packages"
