@@ -427,7 +427,6 @@ jobs:
           
           # Template files creation removed - only essential files needed
           # File creation process simplified - only essential structure needed
-        }
       
     - name: Upload debug output
       uses: actions/upload-artifact@v4
