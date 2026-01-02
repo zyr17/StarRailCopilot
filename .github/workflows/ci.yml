@@ -68,7 +68,17 @@ jobs:
           Write-Host "requirements.txt not found, skipping."
         }
 
-    # [Step 7] Verify final structure
+    # [Step 7] Global Search for tcl Folders
+    - name: Global Search for tcl Folders
+      run: |
+        Write-Host "Searching for all 'tcl' folders in the current workspace..."
+        
+        # Get-ChildItem -Directory -Filter "tcl" -Recurse 
+        
+        # -ErrorAction SilentlyContinue 忽略无权限访问的系统目录
+        Get-ChildItem -Path "." -Directory -Filter "tcl" -Recurse -ErrorAction SilentlyContinue | Select-Object FullName
+
+    # [Step 8] Verify final structure
     - name: Verify Toolkit
       run: |
         Get-ChildItem -Path toolkit
