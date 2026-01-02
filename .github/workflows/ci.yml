@@ -2,9 +2,9 @@ name: Build Windows
 
 on:
   push:
-    branches: [ main, test-ci ]
+    branches: [ main, test-ci* ]
   pull_request:
-    branches: [ main, test-ci ]
+    branches: [ main, test-ci* ]
 
 jobs:
   build-windows:
