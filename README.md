@@ -1,7 +1,7 @@
 **| [English](README_en.md) | 简体中文 | [Español](README_es.md) | [日本語](README_ja.md) |**
 
 
-# StarRailCopilot
+# StarRailCopilot (CI Test)
 
 Star Rail auto script | 星铁速溶茶，崩坏：星穹铁道脚本，基于下一代Alas框架。
 
