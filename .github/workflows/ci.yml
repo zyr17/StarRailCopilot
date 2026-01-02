@@ -68,14 +68,14 @@ jobs:
           Write-Host "requirements.txt not found, skipping."
         }
 
-    # [Step 6] Verify final structure
+    # [Step 7] Verify final structure
     - name: Verify Toolkit
       run: |
         Get-ChildItem -Path toolkit
         .\toolkit\python.exe --version
         .\toolkit\Git\bin\git.exe --version
 
-    # [Step 7] Compress the toolkit directory
+    # [Step 8] Compress the toolkit directory
     - name: Compress Toolkit
       run: |
         # -r: Recurse subdirectories
@@ -84,7 +84,7 @@ jobs:
         # ./toolkit: Source directory
         7z a -r toolkit.zip ./toolkit
 
-    # [Step 8] Upload the compressed zip as artifact
+    # [Step 9] Upload the compressed zip as artifact
     - name: Upload Toolkit Artifact
       uses: actions/upload-artifact@v4
       with:
@@ -94,10 +94,24 @@ jobs:
 
   build-windows:
     runs-on: windows-latest
+    needs: setup-toolkit
     
     steps:
     - uses: actions/checkout@v4
     
+    # Download and extract toolkit from setup-toolkit job
+    - name: Download Toolkit
+      uses: actions/download-artifact@v4
+      with:
+        name: python-toolkit-compressed
+        path: toolkit-download/
+    
+    # Extract the toolkit zip
+    - name: Extract Toolkit
+      run: |
+        Write-Host "Extracting toolkit from downloaded artifact..."
+        7z x toolkit-download/toolkit.zip -o./
+        
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
