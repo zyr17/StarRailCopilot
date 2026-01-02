@@ -59,13 +59,13 @@ jobs:
         .\toolkit\python.exe get-pip.py --no-warn-script-location
         Remove-Item "get-pip.py"
 
-    # [Step 6] Install dependencies from requirements-in.txt
+    # [Step 6] Install dependencies from requirements.txt
     - name: Install Dependencies
       run: |
-        if (Test-Path "requirements-in.txt") {
-          .\toolkit\python.exe -m pip install --no-cache-dir -r requirements-in.txt
+        if (Test-Path "requirements.txt") {
+          .\toolkit\python.exe -m pip install --no-cache-dir -r requirements.txt
         } else {
-          Write-Host "requirements-in.txt not found, skipping."
+          Write-Host "requirements.txt not found, skipping."
         }
 
     # [Step 7] Verify final structure
