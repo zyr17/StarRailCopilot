@@ -223,6 +223,70 @@ jobs:
         
         Write-Host "Complete Python environment setup finished"
       
+    - name: Copy repository .git directory
+      run: |
+        Write-Host "Copying repository .git directory to match official structure..."
+        
+        $buildDir = "webapp/dist/win-unpacked"
+        $gitSourceDir = ".git"
+        $gitDestDir = Join-Path $buildDir ".git"
+        
+        if (Test-Path $gitSourceDir) {
+          Write-Host "Source .git directory found, copying to build directory..."
+          
+          # Create destination directory
+          if (!(Test-Path $gitDestDir)) {
+            New-Item -ItemType Directory -Path $gitDestDir -Force | Out-Null
+          }
+          
+          # Copy all .git contents recursively
+          Write-Host "Copying .git directory contents..."
+          robocopy $gitSourceDir $gitDestDir /E /R:3 /W:1 /MT:8 /NP /XD "__pycache__" | Out-Null
+          
+          # Verify key .git files exist
+          $keyGitFiles = @(".git/config", ".git/HEAD", ".git/description", ".git/index", ".git/FETCH_HEAD")
+          foreach ($gitFile in $keyGitFiles) {
+            $destFile = Join-Path $gitDestDir $gitFile.Substring(5)  # Remove ".git/" prefix
+            if (Test-Path $destFile) {
+              Write-Host "✓ Copied: $gitFile"
+            } else {
+              Write-Host "⚠ Missing: $gitFile"
+            }
+          }
+          
+          # Copy git hooks if they exist
+          $hooksSource = Join-Path $gitSourceDir "hooks"
+          $hooksDest = Join-Path $gitDestDir "hooks"
+          if (Test-Path $hooksSource) {
+            Write-Host "Copying git hooks..."
+            if (!(Test-Path $hooksDest)) {
+              New-Item -ItemType Directory -Path $hooksDest -Force | Out-Null
+            }
+            Get-ChildItem $hooksSource -File | ForEach-Object {
+              Copy-Item $_.FullName $hooksDest -Force
+              Write-Host "✓ Copied hook: $($_.Name)"
+            }
+          }
+          
+          # Copy other .git subdirectories
+          $gitSubdirs = @("info", "logs", "objects", "refs", "packed-refs")
+          foreach ($subdir in $gitSubdirs) {
+            $sourceSubdir = Join-Path $gitSourceDir $subdir
+            $destSubdir = Join-Path $gitDestDir $subdir
+            if (Test-Path $sourceSubdir) {
+              if (!(Test-Path $destSubdir)) {
+                New-Item -ItemType Directory -Path $destSubdir -Force | Out-Null
+              }
+              robocopy $sourceSubdir $destSubdir /E /R:3 /W:1 /MT:8 /NP | Out-Null
+              Write-Host "✓ Copied .git/$subdir"
+            }
+          }
+          
+          Write-Host ".git directory copying completed successfully"
+        } else {
+          Write-Host "Warning: Source .git directory not found in repository"
+        }
+      
     - name: Create essential directory structure only
       run: |
         Write-Host "Creating essential directory structure for StarRailCopilot..."
