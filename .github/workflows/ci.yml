@@ -11,6 +11,8 @@ jobs:
     runs-on: windows-latest
     
     steps:
+    - uses: actions/checkout@v4
+    
     # [Step 1] Create directory structure
     - name: Create Toolkit Directories
       run: |
