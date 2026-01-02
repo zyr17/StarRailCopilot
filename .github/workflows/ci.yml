@@ -657,7 +657,8 @@ jobs:
           
           foreach ($test in $unitTestFiles) {
             $testPath = Join-Path $buildDir "tests/unit/$test"
-            "# $test - Unit test`n`nimport unittest`n`nclass Test$(($test.Replace('test_', '').Replace('.py', '')).Split('_' | ForEach-Object {$_[0].ToString().ToUpper() + $_.Substring(1)}) -join '')(unittest.TestCase):`n    def test_example(self):`n        self.assertTrue(True)" | Out-File -FilePath $testPath -Encoding UTF8
+            $className = ($test.Replace('test_', '').Replace('.py', '')).Split('_') | ForEach-Object { $_[0].ToString().ToUpper() + $_.Substring(1) } | Join-String -Separator ''
+            "# $test - Unit test`n`nimport unittest`n`nclass Test$className(unittest.TestCase):`n    def test_example(self):`n        self.assertTrue(True)" | Out-File -FilePath $testPath -Encoding UTF8
           }
           
           # Integration tests
@@ -671,7 +672,8 @@ jobs:
           
           foreach ($test in $integrationTestFiles) {
             $testPath = Join-Path $buildDir "tests/integration/$test"
-            "# $test - Integration test`n`nimport unittest`n`nclass Test$(($test.Replace('test_', '').Replace('.py', '')).Split('_' | ForEach-Object {$_[0].ToString().ToUpper() + $_.Substring(1)}) -join '')(unittest.TestCase):`n    def test_integration_example(self):`n        self.assertTrue(True)" | Out-File -FilePath $testPath -Encoding UTF8
+            $className = ($test.Replace('test_', '').Replace('.py', '')).Split('_') | ForEach-Object { $_[0].ToString().ToUpper() + $_.Substring(1) } | Join-String -Separator ''
+            "# $test - Integration test`n`nimport unittest`n`nclass Test$className(unittest.TestCase):`n    def test_integration_example(self):`n        self.assertTrue(True)" | Out-File -FilePath $testPath -Encoding UTF8
           }
           
           # E2E tests
@@ -683,7 +685,8 @@ jobs:
           
           foreach ($test in $e2eTestFiles) {
             $testPath = Join-Path $buildDir "tests/e2e/$test"
-            "# $test - E2E test`n`nimport unittest`n`nclass Test$(($test.Replace('test_', '').Replace('.py', '')).Split('_' | ForEach-Object {$_[0].ToString().ToUpper() + $_.Substring(1)}) -join '')(unittest.TestCase):`n    def test_e2e_example(self):`n        self.assertTrue(True)" | Out-File -FilePath $testPath -Encoding UTF8
+            $className = ($test.Replace('test_', '').Replace('.py', '')).Split('_') | ForEach-Object { $_[0].ToString().ToUpper() + $_.Substring(1) } | Join-String -Separator ''
+            "# $test - E2E test`n`nimport unittest`n`nclass Test$className(unittest.TestCase):`n    def test_e2e_example(self):`n        self.assertTrue(True)" | Out-File -FilePath $testPath -Encoding UTF8
           }
           
           # Test fixtures
