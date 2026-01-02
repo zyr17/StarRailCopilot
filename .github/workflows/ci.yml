@@ -505,6 +505,11 @@ jobs:
           
           foreach ($config in $moduleConfigs) {
             $configPath = Join-Path $buildDir "config/modules/$config"
+            # 确保目录存在
+            $configDir = Split-Path $configPath -Parent
+            if (!(Test-Path $configDir)) {
+              New-Item -ItemType Directory -Path $configDir -Force | Out-Null
+            }
             '{"module": "' + $config + '", "enabled": true, "settings": {}}' | Out-File -FilePath $configPath -Encoding UTF8
           }
           
@@ -524,6 +529,11 @@ jobs:
           
           foreach ($config in $pluginConfigs) {
             $configPath = Join-Path $buildDir "config/plugins/$config"
+            # 确保目录存在
+            $configDir = Split-Path $configPath -Parent
+            if (!(Test-Path $configDir)) {
+              New-Item -ItemType Directory -Path $configDir -Force | Out-Null
+            }
             '{"plugin": "' + $config + '", "enabled": true, "version": "1.0.0", "settings": {}}' | Out-File -FilePath $configPath -Encoding UTF8
           }
           
@@ -539,6 +549,11 @@ jobs:
           
           foreach ($theme in $themeConfigs) {
             $themePath = Join-Path $buildDir "config/themes/$theme"
+            # 确保目录存在
+            $themeDir = Split-Path $themePath -Parent
+            if (!(Test-Path $themeDir)) {
+              New-Item -ItemType Directory -Path $themeDir -Force | Out-Null
+            }
             '{"theme": "' + $theme.Replace('.json', '') + '", "primary": "#000000", "secondary": "#FFFFFF", "accent": "#FF0000"}' | Out-File -FilePath $themePath -Encoding UTF8
           }
           
@@ -546,6 +561,11 @@ jobs:
           $localeConfigs = @("en.json", "zh.json", "es.json", "fr.json", "de.json", "ja.json", "ko.json", "ru.json", "pt.json", "it.json", "ar.json", "hi.json")
           foreach ($locale in $localeConfigs) {
             $localePath = Join-Path $buildDir "config/locales/$locale"
+            # 确保目录存在
+            $localeDir = Split-Path $localePath -Parent
+            if (!(Test-Path $localeDir)) {
+              New-Item -ItemType Directory -Path $localeDir -Force | Out-Null
+            }
             '{"locale": "' + $locale.Replace('.json', '') + '", "name": "' + $locale.Replace('.json', '').ToUpper() + '", "enabled": true}' | Out-File -FilePath $localePath -Encoding UTF8
           }
           
@@ -553,6 +573,11 @@ jobs:
           $profileConfigs = @("default.json", "admin.json", "user.json", "guest.json", "developer.json", "tester.json", "operator.json", "viewer.json")
           foreach ($profile in $profileConfigs) {
             $profilePath = Join-Path $buildDir "config/profiles/$profile"
+            # 确保目录存在
+            $profileDir = Split-Path $profilePath -Parent
+            if (!(Test-Path $profileDir)) {
+              New-Item -ItemType Directory -Path $profileDir -Force | Out-Null
+            }
             '{"profile": "' + $profile.Replace('.json', '') + '", "permissions": ["read"], "settings": {}}' | Out-File -FilePath $profilePath -Encoding UTF8
           }
           
