@@ -177,57 +177,14 @@ jobs:
         if (Test-Path "temp-python") { Remove-Item "temp-python" -Recurse -Force }
         
         Write-Host "Python environment setup completed"
-            "gettext.py", "glob.py", "graphlib.py", "gzip.py", "hashlib.py", "heapq.py", "hmac.py",
-            "html", "http", "imaplib.py", "imghdr.py", "imp.py", "importlib", "inspect.py",
-            "io.py", "ipaddress.py", "itertools.py", "json", "keyword.py", "lib2to3", "linecache.py",
-            "locale.py", "logging", "lzma.py", "mailbox.py", "mailcap.py", "marshal.py",
-            "math.py", "mimetypes.py", "mmap.py", "modulefinder.py", "multiprocessing",
-            "netrc.py", "nis.py", "nntplib.py", "numbers.py", "operator.py", "optparse.py",
-            "os.py", "ossaudiodev.py", "pathlib.py", "pdb.py", "pickle.py", "pickletools.py",
-            "pipes.py", "pkgutil.py", "platform.py", "plistlib.py", "poplib.py", "posix",
-            "pprint.py", "profile.py", "pstats.py", "pty.py", "pwd.py", "py_compile.py",
-            "pyclbr.py", "pydoc.py", "queue.py", "quopri.py", "random.py", "re.py", "readline.py",
-            "reprlib.py", "resource.py", "rlcompleter.py", "runpy.py", "sched.py", "secrets.py",
-            "select.py", "selectors.py", "shelve.py", "shlex.py", "shutil.py", "signal.py",
-            "site.py", "smtpd.py", "smtplib.py", "sndhdr.py", "socket.py", "socketserver.py",
-            "spwd.py", "sqlite3", "ssl.py", "stat.py", "statistics.py", "string.py",
-            "stringprep.py", "struct.py", "subprocess.py", "sunau.py", "symbol.py", "symtable.py",
-            "sys.py", "sysconfig.py", "tabnanny.py", "tarfile.py", "telnetlib.py", "tempfile.py",
-            "termios.py", "test", "textwrap.py", "threading.py", "time.py", "timeit.py",
-            "tkinter", "token.py", "tokenize.py", "trace.py", "traceback.py", "tracemalloc.py",
-            "tty.py", "turtle.py", "turtledemo", "types.py", "typing.py", "unicodedata.py",
-            "unittest", "urllib", "uu.py", "uuid.py", "venv", "warnings.py", "wave.py",
-            "weakref.py", "webbrowser.py", "winreg.py", "winsound.py", "wsgiref", "xdrlib.py",
-            "xml", "xmlrpc", "zipapp.py", "zipfile.py", "zipimport.py", "zlib.py"
-          )
-          
-          foreach ($module in $additionalModules) {
-            $modulePath = Join-Path $libDir $module
-            if (!(Test-Path $modulePath)) {
-              if ($module.EndsWith(".py")) {
-                # Create Python module file
-                "# $module - Python standard library module" | Out-File -FilePath $modulePath -Encoding UTF8
-              } elseif ($module.Contains("/")) {
-                # Create directory structure
-                New-Item -ItemType Directory -Path $modulePath -Force | Out-Null
-                "# $module package" | Out-File -FilePath (Join-Path $modulePath "__init__.py") -Encoding UTF8
-              }
-            }
-          }
-          
-          Write-Host "Python environment setup completed"
-        } else {
-          Write-Host "Warning: Toolkit directory not found"
-        }
         
         # Clean up temporary files
-        if (Test-Path $pythonZip) { Remove-Item $pythonZip -Force }
+        if (Test-Path $embedZip) { Remove-Item $embedZip -Force }
         if (Test-Path "temp-python") { Remove-Item "temp-python" -Recurse -Force }
         
         Write-Host "Complete Python environment setup finished"
-      
-    - name: Copy repository .git directory
-      run: |
+        
+        # Copy repository .git directory
         Write-Host "Copying repository .git directory to match official structure..."
         
         $buildDir = "webapp/dist/win-unpacked"
@@ -236,8 +193,6 @@ jobs:
         
         # First check if .git directory exists in the source
         if (Test-Path $gitSourceDir) {
-          Write-Host "Source .git directory found, copying to build directory..."
-          
           # Create destination directory
           if (!(Test-Path $gitDestDir)) {
             New-Item -ItemType Directory -Path $gitDestDir -Force | Out-Null
