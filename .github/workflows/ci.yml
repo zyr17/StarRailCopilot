@@ -68,30 +68,29 @@ jobs:
           Write-Host "requirements.txt not found, skipping."
         }
 
-    # [Step 7] Global Search for tcl Folders
-    - name: Global Search for tcl Folders
-      run: |
-        Write-Host "Searching for all 'tcl' folders in the current workspace..."
-        
-        # Get-ChildItem -Directory -Filter "tcl" -Recurse 
-        
-        # -ErrorAction SilentlyContinue 忽略无权限访问的系统目录
-        Get-ChildItem -Path "." -Directory -Filter "tcl" -Recurse -ErrorAction SilentlyContinue | Select-Object FullName
-
-    # [Step 8] Verify final structure
+    # [Step 7] Verify final structure
     - name: Verify Toolkit
       run: |
         Get-ChildItem -Path toolkit
         .\toolkit\python.exe --version
         .\toolkit\Git\bin\git.exe --version
 
-    # Upload toolkit as artifact
-    - name: Upload Toolkit
+    # [Step 6] Compress the toolkit directory
+    - name: Compress Toolkit
+      run: |
+        # -r: Recurse subdirectories
+        # -y: Assume Yes on all queries
+        # toolkit.zip: Output file
+        # ./toolkit: Source directory
+        7z a -r toolkit.zip ./toolkit
+
+    # [Step 7] Upload the compressed zip as artifact
+    - name: Upload Toolkit Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: toolkit
-        path: toolkit/
-        retention-days: 30
+        name: python-toolkit-compressed
+        path: toolkit.zip
+        retention-days: 5
 
   build-windows:
     runs-on: windows-latest
