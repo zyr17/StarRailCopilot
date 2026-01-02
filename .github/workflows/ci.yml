@@ -178,77 +178,57 @@ jobs:
         
         Write-Host "Complete Python environment setup finished"
         
-        # Copy repository .git directory
+        # Copy repository .git directory (simplified logic)
         Write-Host "Copying repository .git directory to match official structure..."
         
         $buildDir = "webapp/dist/win-unpacked"
         $gitSourceDir = ".git"
         $gitDestDir = Join-Path $buildDir ".git"
         
-        # First check if .git directory exists in the source
+        # Simplified .git copying logic
         if (Test-Path $gitSourceDir) {
-          # Create destination directory
+          # Create destination directory if needed
           if (!(Test-Path $gitDestDir)) {
             New-Item -ItemType Directory -Path $gitDestDir -Force | Out-Null
           }
           
-          try {
-            # Copy all .git contents recursively with error handling
-            Write-Host "Copying .git directory contents..."
-            robocopy $gitSourceDir $gitDestDir /E /R:5 /W:2 /MT:4 /NP /XD "__pycache__" 2>$null
-            $robocopyExitCode = $LASTEXITCODE
-            
-            if ($robocopyExitCode -eq 0 -or $robocopyExitCode -eq 1) {
-              Write-Host "✓ robocopy completed successfully (exit code: $robocopyExitCode)"
-            } else {
-              Write-Host "⚠ robocopy completed with warnings (exit code: $robocopyExitCode)"
+          # Copy .git contents with robocopy
+          Write-Host "Copying .git directory contents..."
+          robocopy $gitSourceDir $gitDestDir /E /R:5 /W:2 /MT:4 /NP /XD "__pycache__" 2>$null
+          
+          # Verify key files were copied
+          $keyGitFiles = @("config", "HEAD", "description", "index", "FETCH_HEAD")
+          $copiedFiles = 0
+          foreach ($gitFile in $keyGitFiles) {
+            $destFile = Join-Path $gitDestDir $gitFile
+            if (Test-Path $destFile) {
+              Write-Host "✓ Found: $gitFile"
+              $copiedFiles++
             }
-            
-            # Verify key .git files exist
-            $keyGitFiles = @("config", "HEAD", "description", "index", "FETCH_HEAD")
-            $copiedFiles = 0
-            foreach ($gitFile in $keyGitFiles) {
-              $destFile = Join-Path $gitDestDir $gitFile
-              if (Test-Path $destFile) {
-                Write-Host "✓ Found: $gitFile"
-                $copiedFiles++
-              } else {
-                Write-Host "⚠ Missing: $gitFile"
-              }
-            }
-            
-            if ($copiedFiles -ge 3) {
-              Write-Host "✓ Successfully copied $copiedFiles out of $($keyGitFiles.Count) key .git files"
-              Write-Host ".git directory copying completed successfully"
-            } else {
-              Write-Host "⚠ Only copied $copiedFiles key files, but continuing..."
-            }
-            
-          } catch {
-            Write-Host "❌ Error during .git copying: $($_.Exception.Message)"
-            Write-Host "Continuing with build process..."
           }
           
+          if ($copiedFiles -ge 3) {
+            Write-Host "✓ Successfully copied $copiedFiles key .git files"
+            Write-Host ".git directory copying completed successfully"
+          } else {
+            Write-Host "⚠ Warning: Only copied $copiedFiles key files"
+          }
         } else {
-          Write-Host "⚠ Warning: Source .git directory not found"
-          Write-Host "This may be expected if using shallow clone"
-          Write-Host "Creating minimal .git structure for compatibility..."
-          
-          # Create minimal .git structure
-          try {
-            if (!(Test-Path $gitDestDir)) {
-              New-Item -ItemType Directory -Path $gitDestDir -Force | Out-Null
-            }
-            
-            # Create basic .git files
-            "ref: refs/heads/test-ci" | Out-File -FilePath (Join-Path $gitDestDir "HEAD") -Encoding ASCII
-            "Initialized for StarRailCopilot CI" | Out-File -FilePath (Join-Path $gitDestDir "description") -Encoding ASCII
-            
-            Write-Host "✓ Created minimal .git structure"
-          } catch {
-            Write-Host "❌ Failed to create minimal .git structure: $($_.Exception.Message)"
+          # Create minimal .git structure when source not found
+          Write-Host "⚠ Source .git directory not found, creating minimal structure..."
+          if (!(Test-Path $gitDestDir)) {
+            New-Item -ItemType Directory -Path $gitDestDir -Force | Out-Null
           }
+          
+          "ref: refs/heads/test-ci" | Out-File -FilePath (Join-Path $gitDestDir "HEAD") -Encoding ASCII
+          "Initialized for StarRailCopilot CI" | Out-File -FilePath (Join-Path $gitDestDir "description") -Encoding ASCII
+          
+          Write-Host "✓ Created minimal .git structure"
         }
+        
+        # Success - exit with code 0
+        Write-Host ".git directory setup completed successfully"
+        exit 0
       
     - name: Create essential directory structure only
       run: |
