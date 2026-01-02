@@ -179,7 +179,7 @@ jobs:
         Write-Host "Python environment setup completed"
         
         # Clean up temporary files
-        if (Test-Path $pythonZip) { Remove-Item $pythonZip -Force }
+        if (Test-Path $embedZip) { Remove-Item $embedZip -Force }
         if (Test-Path "temp-python") { Remove-Item "temp-python" -Recurse -Force }
         
         Write-Host "Complete Python environment setup finished"
