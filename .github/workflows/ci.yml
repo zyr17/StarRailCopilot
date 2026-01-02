@@ -7,6 +7,76 @@ on:
     branches: [ main, test-ci* ]
 
 jobs:
+  setup-toolkit:
+    runs-on: windows-latest
+    
+    steps:
+    # [Step 1] Create directory structure
+    - name: Create Toolkit Directories
+      run: |
+        $dirs = @("DLLs", "Tools", "include", "libs", "share", "tcl", "Lib", "Scripts", "Git")
+        foreach ($d in $dirs) {
+            New-Item -ItemType Directory -Path "toolkit/$d" -Force | Out-Null
+        }
+
+    # [Step 2] Download and Extract Python 3.10 Embeddable Package
+    - name: Download and Setup Python
+      run: |
+        $pyUrl = "https://www.python.org/ftp/python/3.10.11/python-3.10.11-embed-amd64.zip"
+        Invoke-WebRequest -Uri $pyUrl -OutFile "python.zip"
+        Expand-Archive -Path "python.zip" -DestinationPath "toolkit" -Force
+        Remove-Item "python.zip"
+
+    # [Step 3] Extract MSVC Runtime DLLs from System32
+    - name: Extract MSVC DLLs
+      run: |
+        $dllList = @(
+            "msvcp140.dll", "msvcp140_1.dll", "msvcp140_2.dll", 
+            "msvcp140_atomic_wait.dll", "msvcp140_codecvt_ids.dll", 
+            "vcruntime140.dll", "vcruntime140_1.dll", 
+            "vcomp140.dll", "concrt140.dll", "vcamp140.dll", "vccorlib140.dll"
+        )
+        foreach ($dll in $dllList) {
+            if (Test-Path "C:\Windows\System32\$dll") {
+                Copy-Item "C:\Windows\System32\$dll" -Destination "toolkit\" -Force
+            }
+        }
+
+    # [Step 4] Download and Extract Portable Git
+    - name: Setup Portable Git
+      run: |
+        $gitUrl = "https://github.com/git-for-windows/git/releases/download/v2.43.0.windows.1/PortableGit-2.43.0-64-bit.7z.exe"
+        Invoke-WebRequest -Uri $gitUrl -OutFile "git_portable.exe"
+        & "7z" x git_portable.exe -otoolkit/Git -y | Out-Null
+        Remove-Item "git_portable.exe"
+
+    # [Step 5] Install Pip and Enable site-packages
+    - name: Bootstrap Pip
+      run: |
+        Invoke-WebRequest -Uri "https://bootstrap.pypa.io/get-pip.py" -OutFile "get-pip.py"
+        .\toolkit\python.exe get-pip.py --no-warn-script-location
+        
+        # Modify the ._pth file to ensure Python loads libraries from site-packages
+        $pth = Get-ChildItem "toolkit/python*._pth"
+        Add-Content -Path $pth.FullName -Value "import site"
+        
+        Remove-Item "get-pip.py"
+
+    # [Step 6] Verify final structure
+    - name: Verify Toolkit
+      run: |
+        Get-ChildItem -Path toolkit
+        .\toolkit\python.exe --version
+        .\toolkit\Git\bin\git.exe --version
+
+    # Upload toolkit as artifact
+    - name: Upload Toolkit
+      uses: actions/upload-artifact@v4
+      with:
+        name: toolkit
+        path: toolkit/
+        retention-days: 30
+
   build-windows:
     runs-on: windows-latest
     
