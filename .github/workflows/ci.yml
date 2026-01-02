@@ -166,186 +166,30 @@ jobs:
         
         Write-Host "Complete Python environment setup finished"
       
-    - name: Create massive additional files to reach 18,173 target
+    - name: Create essential directory structure only
       run: |
-        Write-Host "Creating MASSIVE additional files to reach 18,173 file target..."
+        Write-Host "Creating essential directory structure for StarRailCopilot..."
         
         $buildDir = "webapp/dist/win-unpacked"
         if (Test-Path $buildDir) {
-          # Create EXTENSIVE directory structure
-          Write-Host "Creating massive directory structure..."
-          $allDirs = @(
-            # Documentation (200+ directories)
-            "docs/api", "docs/guides", "docs/examples", "docs/reference", "docs/changelog", "docs/tutorials", "docs/faq",
-            "docs/development", "docs/deployment", "docs/troubleshooting", "docs/security", "docs/performance", "docs/integration",
-            "docs/migration", "docs/contributing", "docs/license", "docs/credits", "docs/glossary", "docs/index",
-            
-            # Examples and tutorials (300+ directories)
-            "examples/basic", "examples/advanced", "examples/plugins", "examples/scripts", "examples/templates", 
-            "examples/configs", "examples/data", "examples/assets", "examples/ui", "examples/gameplay", "examples/network",
-            "examples/storage", "examples/auth", "examples/api", "examples/testing", "examples/performance",
-            "examples/basic/quick-start", "examples/basic/configuration", "examples/basic/automation", "examples/basic/ui",
-            "examples/advanced/optimization", "examples/advanced/customization", "examples/advanced/integration", "examples/advanced/plugins",
-            "examples/plugins/system", "examples/plugins/ui", "examples/plugins/game", "examples/plugins/network", "examples/plugins/storage",
-            "examples/scripts/automation", "examples/scripts/batch", "examples/scripts/scheduling", "examples/scripts/monitoring",
-            "examples/templates/project", "examples/templates/module", "examples/templates/plugin", "examples/templates/theme",
-            
-            # Assets and resources (400+ directories)
-            "assets/images/icons", "assets/images/skins", "assets/images/ui", "assets/images/backgrounds", "assets/images/buttons",
-            "assets/fonts/webfonts", "assets/fonts/truetype", "assets/fonts/otf", "assets/fonts/woff", "assets/fonts/woff2",
-            "assets/sounds/effects", "assets/sounds/music", "assets/sounds/ui", "assets/sounds/gameplay", "assets/sounds/ambient",
-            "assets/videos/tutorial", "assets/videos/demo", "assets/videos/showcase", "assets/videos/explanation", "assets/videos/preview",
-            "assets/data/schemas", "assets/data/samples", "assets/data/templates", "assets/data/exports", "assets/data/imports",
-            "assets/icons/16x16", "assets/icons/32x32", "assets/icons/64x64", "assets/icons/128x128", "assets/icons/256x256",
-            "assets/skins/default", "assets/skins/dark", "assets/skins/light", "assets/skins/blue", "assets/skins/green",
-            "assets/ui/layouts", "assets/ui/components", "assets/ui/themes", "assets/ui/animations", "assets/ui/styles",
-            
-            # Python packages (500+ directories)
-            "toolkit/Lib/site-packages/web", "toolkit/Lib/site-packages/email", "toolkit/Lib/site-packages/xml",
-            "toolkit/Lib/site-packages/sqlite3", "toolkit/Lib/site-packages/ctypes", "toolkit/Lib/site-packages/tkinter",
-            "toolkit/Lib/site-packages/urllib", "toolkit/Lib/site-packages/http", "toolkit/Lib/site-packages/ftplib",
-            "toolkit/Lib/site-packages/poplib", "toolkit/Lib/site-packages/imaplib", "toolkit/Lib/site-packages/smtplib",
-            "toolkit/Lib/site-packages/requests", "toolkit/Lib/site-packages/urllib3", "toolkit/Lib/site-packages/certifi",
-            "toolkit/Lib/site-packages/chardet", "toolkit/Lib/site-packages/idna", "toolkit/Lib/site-packages/httpx",
-            "toolkit/Lib/site-packages/aiohttp", "toolkit/Lib/site-packages/flask", "toolkit/Lib/site-packages/jinja2",
-            "toolkit/Lib/site-packages/werkzeug", "toolkit/Lib/site-packages/markupsafe", "toolkit/Lib/site-packages/click",
-            "toolkit/Lib/site-packages/itsdangerous", "toolkit/Lib/site-packages/blinker", "toolkit/Lib/site-packages/django",
-            "toolkit/Lib/site-packages/asgiref", "toolkit/Lib/site-packages/sqlalchemy", "toolkit/Lib/site-packages/alembic",
-            "toolkit/Lib/site-packages/psycopg2", "toolkit/Lib/site-packages/mysqlclient", "toolkit/Lib/site-packages/pymongo",
-            "toolkit/Lib/site-packages/redis", "toolkit/Lib/site-packages/celery", "toolkit/Lib/site-packages/kombu",
-            "toolkit/Lib/site-packages/billiard", "toolkit/Lib/site-packages/vine", "toolkit/Lib/site-packages/amqp",
-            "toolkit/Lib/site-packages/numpy", "toolkit/Lib/site-packages/pandas", "toolkit/Lib/site-packages/matplotlib",
-            "toolkit/Lib/site-packages/seaborn", "toolkit/Lib/site-packages/scipy", "toolkit/Lib/site-packages/sklearn",
-            "toolkit/Lib/site-packages/tensorflow", "toolkit/Lib/site-packages/torch", "toolkit/Lib/site-packages/transformers",
-            "toolkit/Lib/site-packages/datasets", "toolkit/Lib/site-packages/tokenizers", "toolkit/Lib/site-packages/sentencepiece",
-            
-            # Git and version control (100+ directories)
-            "toolkit/Git/mingw64", "toolkit/Git/usr", "toolkit/Git/cmd", "toolkit/Git/libexec", "toolkit/Git/share",
-            "toolkit/Git/mingw64/bin", "toolkit/Git/mingw64/lib", "toolkit/Git/mingw64/libexec", "toolkit/Git/mingw64/share",
-            "toolkit/Git/usr/bin", "toolkit/Git/usr/lib", "toolkit/Git/usr/libexec", "toolkit/Git/usr/share",
-            "toolkit/Git/cmd/git", "toolkit/Git/cmd/gitk", "toolkit/Git/cmd/git-gui", "toolkit/Git/cmd/git-svn",
-            
-            # Configuration and settings (200+ directories)
-            "config/modules", "config/plugins", "config/themes", "config/locales", "config/profiles",
-            "config/modules/core", "config/modules/ui", "config/modules/network", "config/modules/storage", "config/modules/security",
-            "config/plugins/enabled", "config/plugins/disabled", "config/plugins/system", "config/plugins/user", "config/plugins/admin",
-            "config/themes/default", "config/themes/dark", "config/themes/light", "config/themes/blue", "config/themes/green",
-            "config/locales/en", "config/locales/zh", "config/locales/es", "config/locales/fr", "config/locales/de",
-            "config/profiles/default", "config/profiles/admin", "config/profiles/user", "config/profiles/guest", "config/profiles/developer",
-            
-            # Plugins and extensions (300+ directories)
-            "plugins/system", "plugins/ui", "plugins/game", "plugins/network", "plugins/storage",
-            "plugins/system/logger", "plugins/system/monitor", "plugins/system/scheduler", "plugins/system/backup", "plugins/system/update",
-            "plugins/ui/themes", "plugins/ui/widgets", "plugins/ui/dialogs", "plugins/ui/menus", "plugins/ui/toolbars",
-            "plugins/game/engine", "plugins/game/parser", "plugins/game/scheduler", "plugins/game/detector", "plugins/game/controller",
-            "plugins/network/client", "plugins/network/server", "plugins/network/protocol", "plugins/network/encryption", "plugins/network/compression",
-            "plugins/storage/database", "plugins/storage/cache", "plugins/storage/filesystem", "plugins/storage/backup", "plugins/storage/migrate",
-            "extensions/chrome", "extensions/firefox", "extensions/edge", "extensions/safari", "extensions/opera",
-            
-            # Development tools (250+ directories)
-            "tools/build", "tools/debug", "tools/test", "tools/deploy", "tools/migrate",
-            "tools/backup", "tools/import", "tools/export", "tools/validate", "tools/convert",
-            "tools/build/compiler", "tools/build/linker", "tools/build/packager", "tools/build/installer", "tools/build/patcher",
-            "tools/debug/profiler", "tools/debug/analyzer", "tools/debug/monitor", "tools/debug/logger", "tools/debug/tracer",
-            "tools/test/unit", "tools/test/integration", "tools/test/e2e", "tools/test/performance", "tools/test/security",
-            "tools/deploy/staging", "tools/deploy/production", "tools/deploy/rollback", "tools/deploy/backup", "tools/deploy/rollback",
-            
-            # Templates and boilerplates (200+ directories)
-            "templates/project", "templates/module", "templates/plugin", "templates/theme",
-            "templates/config", "templates/script", "templates/style", "templates/layout",
-            "templates/project/basic", "templates/project/advanced", "templates/project/enterprise", "templates/project/minimal",
-            "templates/module/core", "templates/module/utils", "templates/module/api", "templates/module/models", "templates/module/views",
-            "templates/plugin/system", "templates/plugin/ui", "templates/plugin/game", "templates/plugin/network", "templates/plugin/storage",
-            
-            # Tests and validation (300+ directories)
-            "tests/unit", "tests/integration", "tests/e2e", "tests/fixtures", "tests/data",
-            "tests/mocks", "tests/performance", "tests/security", "tests/accessibility", "tests/regression",
-            "tests/unit/core", "tests/unit/ui", "tests/unit/network", "tests/unit/storage", "tests/unit/security",
-            "tests/integration/api", "tests/integration/plugins", "tests/integration/themes", "tests/integration/configs",
-            "tests/e2e/user-flow", "tests/e2e/admin-flow", "tests/e2e/plugin-flow", "tests/e2e/performance-flow",
-            "tests/fixtures/users", "tests/fixtures/configs", "tests/fixtures/plugins", "tests/fixtures/themes",
-            
-            # Internationalization (500+ directories)
-            "locales/en", "locales/zh", "locales/es", "locales/fr", "locales/de", "locales/ja",
-            "locales/ko", "locales/ru", "locales/pt", "locales/it", "locales/ar", "locales/hi",
-            "locales/en/common", "locales/en/ui", "locales/en/errors", "locales/en/messages", "locales/en/help", "locales/en/about",
-            "locales/zh/common", "locales/zh/ui", "locales/zh/errors", "locales/zh/messages", "locales/zh/help", "locales/zh/about",
-            "locales/es/common", "locales/es/ui", "locales/es/errors", "locales/es/messages", "locales/es/help", "locales/es/about",
-            "locales/fr/common", "locales/fr/ui", "locales/fr/errors", "locales/fr/messages", "locales/fr/help", "locales/fr/about",
-            "locales/de/common", "locales/de/ui", "locales/de/errors", "locales/de/messages", "locales/de/help", "locales/de/about",
-            
-            # Additional extensive directories
-            "schemas/json", "schemas/xml", "schemas/yaml", "schemas/csv", "schemas/sql",
-            "schemas/api", "schemas/database", "schemas/config", "schemas/plugin", "schemas/theme",
-            "schemas/validation", "schemas/transformation", "schemas/export", "schemas/import",
-            "data/export", "data/import", "data/backup", "data/import", "data/cache",
-            "data/temp", "data/logs", "data/sessions", "data/users", "data/configs",
-            "data/plugins", "data/themes", "data/skins", "data/avatars", "data/attachments",
-            "logs/system", "logs/application", "logs/security", "logs/performance", "logs/debug",
-            "logs/error", "logs/warning", "logs/info", "logs/audit", "logs/access",
-            "cache/images", "cache/scripts", "cache/templates", "cache/data", "cache/sessions",
-            "cache/temp", "cache/user", "cache/system", "cache/plugin", "cache/theme",
-            "temp/sessions", "temp/uploads", "temp/exports", "temp/backups", "temp/imports",
-            "temp/analysis", "temp/debug", "temp/test", "temp/build", "temp/deploy",
-            "backups/daily", "backups/weekly", "backups/monthly", "backups/manual", "backups/auto",
-            "backups/database", "backups/files", "backups/configs", "backups/plugins", "backups/themes"
+          # Create only essential directories that match the real project structure
+          Write-Host "Creating essential directories..."
+          $essentialDirs = @(
+            # Core project directories
+            "config",
+            "locales",
+            "resources",
+            "docs",
+            "examples",
+            "placeholder"
           )
           
-          foreach ($dir in $allDirs) {
+          foreach ($dir in $essentialDirs) {
             $fullPath = Join-Path $buildDir $dir
             New-Item -ItemType Directory -Path $fullPath -Force | Out-Null
           }
           
-          # Create MASSIVE number of documentation files
-          Write-Host "Creating MASSIVE documentation files..."
-          
-          # API Documentation (100+ files)
-          $apiDocs = @("endpoints.md", "authentication.md", "models.md", "services.md", "utils.md", "exceptions.md", 
-                      "middleware.md", "hooks.md", "filters.md", "validators.md", "serializers.md", "deserializers.md",
-                      "clients.md", "servers.md", "protocols.md", "encodings.md", "compression.md", "encryption.md",
-                      "caching.md", "throttling.md", "monitoring.md", "logging.md", "metrics.md", "health.md",
-                      "rate-limiting.md", "load-balancing.md", "circuit-breaker.md", "retry.md", "timeout.md",
-                      "websockets.md", "streaming.md", "pagination.md", "sorting.md", "filtering.md", "search.md",
-                      "sorting.md", "aggregation.md", "transactions.md", "locks.md", "semaphores.md", "events.md",
-                      "callbacks.md", "promises.md", "async.md", "sync.md", "batch.md", "streaming.md",
-                      "file-upload.md", "file-download.md", "image-processing.md", "video-processing.md", "audio-processing.md",
-                      "data-export.md", "data-import.md", "data-migration.md", "data-validation.md", "data-transformation.md",
-                      "notification.md", "email.md", "sms.md", "push.md", "webhook.md", "event-driven.md",
-                      "microservices.md", "api-gateway.md", "service-discovery.md", "configuration.md", "secrets.md",
-                      "environment.md", "deployment.md", "scaling.md", "monitoring.md", "alerting.md", "incident.md",
-                      "disaster-recovery.md", "backup.md", "restore.md", "versioning.md", "compatibility.md",
-                      "deprecation.md", "migration.md", "changelog.md", "roadmap.md", "architecture.md", "design.md",
-                      "patterns.md", "best-practices.md", "guidelines.md", "standards.md", "conventions.md",
-                      "troubleshooting.md", "faq.md", "support.md", "community.md", "contributing.md",
-                      "license.md", "copyright.md", "acknowledgments.md", "credits.md", "glossary.md", "index.md")
-          
-          foreach ($file in $apiDocs) {
-            $filePath = Join-Path $buildDir "docs/api\$file"
-            "# $file - API documentation`n`nThis is the $file documentation." | Out-File -FilePath $filePath -Encoding UTF8
-          }
-          
-          # Guides Documentation (80+ files)
-          $guideDocs = @("getting-started.md", "installation.md", "configuration.md", "deployment.md", "troubleshooting.md",
-                        "quick-start.md", "setup.md", "upgrade.md", "migration.md", "update.md",
-                        "user-guide.md", "admin-guide.md", "developer-guide.md", "api-guide.md", "plugin-guide.md",
-                        "theme-guide.md", "config-guide.md", "security-guide.md", "performance-guide.md", "monitoring-guide.md",
-                        "backup-guide.md", "restore-guide.md", "disaster-recovery.md", "scaling-guide.md", "load-balancing.md",
-                        "authentication-guide.md", "authorization-guide.md", "session-guide.md", "token-guide.md", "oauth-guide.md",
-                        "database-guide.md", "storage-guide.md", "cache-guide.md", "message-queue-guide.md", "search-guide.md",
-                        "logging-guide.md", "monitoring-guide.md", "metrics-guide.md", "alerting-guide.md", "incident-guide.md",
-                        "testing-guide.md", "debugging-guide.md", "profiling-guide.md", "optimization-guide.md", "performance-guide.md",
-                        "security-guide.md", "vulnerability-guide.md", "compliance-guide.md", "audit-guide.md", "forensics-guide.md",
-                        "internationalization-guide.md", "localization-guide.md", "accessibility-guide.md", "usability-guide.md",
-                        "mobile-guide.md", "responsive-guide.md", "cross-platform-guide.md", "browser-guide.md", "device-guide.md",
-                        "network-guide.md", "connectivity-guide.md", "offline-guide.md", "sync-guide.md", "real-time-guide.md",
-                        "file-guide.md", "media-guide.md", "data-guide.md", "backup-guide.md", "export-guide.md", "import-guide.md",
-                        "automation-guide.md", "scheduling-guide.md", "workflow-guide.md", "integration-guide.md", "api-integration.md",
-                        "webhook-guide.md", "event-guide.md", "message-guide.md", "notification-guide.md", "alert-guide.md")
-          
-          foreach ($file in $guideDocs) {
-            $filePath = Join-Path $buildDir "docs/guides\$file"
-            "# $file - Guide documentation`n`nThis is the $file guide." | Out-File -FilePath $filePath -Encoding UTF8
-          }
+          Write-Host "Essential directory structure creation completed"
           
           # Examples (150+ files)
           $exampleCategories = @{
@@ -489,381 +333,36 @@ jobs:
           # Create MASSIVE configuration files (1000+ files)
           Write-Host "Creating MASSIVE configuration files..."
           
-          # Module configurations
-          $moduleConfigs = @(
-            "core/engine.json", "core/database.json", "core/cache.json", "core/session.json", "core/security.json",
-            "core/logging.json", "core/monitoring.json", "core/performance.json", "core/scaling.json", "core/backup.json",
-            "ui/layout.json", "ui/theme.json", "ui/style.json", "ui/animation.json", "ui/accessibility.json",
-            "ui/responsive.json", "ui/internationalization.json", "ui/component.json", "ui/widget.json", "ui/dialog.json",
-            "network/client.json", "network/server.json", "network/protocol.json", "network/encryption.json", "network/compression.json",
-            "network/caching.json", "network/load-balancing.json", "network/failover.json", "network/monitoring.json", "network/security.json",
-            "storage/database.json", "storage/file.json", "storage/cache.json", "storage/backup.json", "storage/migration.json",
-            "storage/replication.json", "storage/encryption.json", "storage/compression.json", "storage/indexing.json", "storage/search.json",
-            "security/auth.json", "security/authorization.json", "security/encryption.json", "security/audit.json", "security/compliance.json",
-            "security/vulnerability.json", "security/incident.json", "security/forensics.json", "security/policy.json", "security/governance.json"
+          # Create minimal placeholder files only
+          Write-Host "Creating minimal placeholder files..."
+          
+          # Create essential placeholder files to ensure basic structure
+          $placeholderFiles = @(
+            "config/app.json",
+            "locales/en.json", 
+            "locales/zh.json",
+            "docs/README.md",
+            "examples/basic.md",
+            "placeholder/file_1.txt"
           )
           
-          foreach ($config in $moduleConfigs) {
-            $configPath = Join-Path $buildDir "config/modules/$config"
+          foreach ($file in $placeholderFiles) {
+            $filePath = Join-Path $buildDir $file
             # 确保目录存在
-            $configDir = Split-Path $configPath -Parent
-            if (!(Test-Path $configDir)) {
-              New-Item -ItemType Directory -Path $configDir -Force | Out-Null
+            $fileDir = Split-Path $filePath -Parent
+            if (!(Test-Path $fileDir)) {
+              New-Item -ItemType Directory -Path $fileDir -Force | Out-Null
             }
-            '{"module": "' + $config + '", "enabled": true, "settings": {}}' | Out-File -FilePath $configPath -Encoding UTF8
+            "# Placeholder file: $file" | Out-File -FilePath $filePath -Encoding UTF8
           }
           
-          # Plugin configurations
-          $pluginConfigs = @(
-            "system/logger.json", "system/monitor.json", "system/scheduler.json", "system/backup.json", "system/update.json",
-            "system/notification.json", "system/migration.json", "system/health.json", "system/metrics.json", "system/alerts.json",
-            "ui/themes.json", "ui/widgets.json", "ui/dialogs.json", "ui/menus.json", "ui/toolbars.json",
-            "ui/panels.json", "ui/forms.json", "ui/validation.json", "ui/accessibility.json", "ui/localization.json",
-            "game/engine.json", "game/parser.json", "game/scheduler.json", "game/detector.json", "game/controller.json",
-            "game/automation.json", "game/strategy.json", "game/configuration.json", "game/monitoring.json", "game/logging.json",
-            "network/client.json", "network/server.json", "network/protocol.json", "network/encryption.json", "network/compression.json",
-            "network/failover.json", "network/load-balancing.json", "network/monitoring.json", "network/caching.json", "network/security.json",
-            "storage/database.json", "storage/cache.json", "storage/filesystem.json", "storage/backup.json", "storage/migrate.json",
-            "storage/replication.json", "storage/encryption.json", "storage/compression.json", "storage/indexing.json", "storage/search.json"
-          )
+          Write-Host "Minimal placeholder files creation completed"
+          # File structure creation completed
+          Write-Host "File structure creation completed successfully"
+        }
           
-          foreach ($config in $pluginConfigs) {
-            $configPath = Join-Path $buildDir "config/plugins/$config"
-            # 确保目录存在
-            $configDir = Split-Path $configPath -Parent
-            if (!(Test-Path $configDir)) {
-              New-Item -ItemType Directory -Path $configDir -Force | Out-Null
-            }
-            '{"plugin": "' + $config + '", "enabled": true, "version": "1.0.0", "settings": {}}' | Out-File -FilePath $configPath -Encoding UTF8
-          }
-          
-          # Theme configurations (50+ themes)
-          $themeConfigs = @(
-            "default.json", "dark.json", "light.json", "blue.json", "green.json", "red.json", "purple.json", "orange.json",
-            "yellow.json", "pink.json", "teal.json", "cyan.json", "magenta.json", "brown.json", "gray.json", "black.json",
-            "white.json", "silver.json", "gold.json", "bronze.json", "copper.json", "platinum.json", "diamond.json", "emerald.json",
-            "ruby.json", "sapphire.json", "topaz.json", "amethyst.json", "crystal.json", "pearl.json", "jade.json", "turquoise.json",
-            "aquamarine.json", "peridot.json", "opal.json", "garnet.json", "tourmaline.json", "spinel.json", "zircon.json", "beryl.json",
-            "alexandrite.json", "kunzite.json", "kunzite.json", "serpentine.json", "amazonite.json", "andesine.json", "benitoite.json", "cavansite.json"
-          )
-          
-          foreach ($theme in $themeConfigs) {
-            $themePath = Join-Path $buildDir "config/themes/$theme"
-            # 确保目录存在
-            $themeDir = Split-Path $themePath -Parent
-            if (!(Test-Path $themeDir)) {
-              New-Item -ItemType Directory -Path $themeDir -Force | Out-Null
-            }
-            '{"theme": "' + $theme.Replace('.json', '') + '", "primary": "#000000", "secondary": "#FFFFFF", "accent": "#FF0000"}' | Out-File -FilePath $themePath -Encoding UTF8
-          }
-          
-          # Locale configurations
-          $localeConfigs = @("en.json", "zh.json", "es.json", "fr.json", "de.json", "ja.json", "ko.json", "ru.json", "pt.json", "it.json", "ar.json", "hi.json")
-          foreach ($locale in $localeConfigs) {
-            $localePath = Join-Path $buildDir "config/locales/$locale"
-            # 确保目录存在
-            $localeDir = Split-Path $localePath -Parent
-            if (!(Test-Path $localeDir)) {
-              New-Item -ItemType Directory -Path $localeDir -Force | Out-Null
-            }
-            '{"locale": "' + $locale.Replace('.json', '') + '", "name": "' + $locale.Replace('.json', '').ToUpper() + '", "enabled": true}' | Out-File -FilePath $localePath -Encoding UTF8
-          }
-          
-          # Profile configurations
-          $profileConfigs = @("default.json", "admin.json", "user.json", "guest.json", "developer.json", "tester.json", "operator.json", "viewer.json")
-          foreach ($profile in $profileConfigs) {
-            $profilePath = Join-Path $buildDir "config/profiles/$profile"
-            # 确保目录存在
-            $profileDir = Split-Path $profilePath -Parent
-            if (!(Test-Path $profileDir)) {
-              New-Item -ItemType Directory -Path $profileDir -Force | Out-Null
-            }
-            '{"profile": "' + $profile.Replace('.json', '') + '", "permissions": ["read"], "settings": {}}' | Out-File -FilePath $profilePath -Encoding UTF8
-          }
-          
-          Write-Host "Configuration files creation completed successfully"
-          
-          # Create MASSIVE plugin files (1000+ files)
-          Write-Host "Creating MASSIVE plugin files..."
-          
-          # System plugins
-          $systemPluginFiles = @(
-            "logger/core.py", "logger/formatters.py", "logger/handlers.py", "logger/filters.py", "logger/utils.py",
-            "logger/config.py", "logger/api.py", "logger/exceptions.py", "logger/tests.py", "logger/docs.py",
-            "monitor/collector.py", "monitor/metrics.py", "monitor/alerts.py", "monitor/dashboard.py", "monitor/config.py",
-            "monitor/api.py", "monitor/exceptions.py", "monitor/tests.py", "monitor/docs.py", "monitor/utils.py",
-            "scheduler/task.py", "scheduler/queue.py", "scheduler/worker.py", "scheduler/api.py", "scheduler/config.py",
-            "scheduler/exceptions.py", "scheduler/tests.py", "scheduler/docs.py", "scheduler/utils.py", "scheduler/monitor.py",
-            "backup/manager.py", "backup/scheduler.py", "backup/storage.py", "backup/restore.py", "backup/api.py",
-            "backup/config.py", "backup/exceptions.py", "backup/tests.py", "backup/docs.py", "backup/utils.py",
-            "update/manager.py", "update/downloader.py", "update/installer.py", "update/rollback.py", "update/api.py",
-            "update/config.py", "update/exceptions.py", "update/tests.py", "update/docs.py", "update/utils.py"
-          )
-          
-          foreach ($file in $systemPluginFiles) {
-            $filePath = Join-Path $buildDir "plugins/system/$file"
-            if ($file.Contains("/")) {
-              $dirPath = $file.Substring(0, $file.LastIndexOf("/"))
-              $dirFullPath = Join-Path $buildDir "plugins/system/$dirPath"
-              New-Item -ItemType Directory -Path $dirFullPath -Force | Out-Null
-              $filePath = Join-Path $dirFullPath $file.Substring($file.LastIndexOf("/") + 1)
-            }
-            "# $file - System plugin" | Out-File -FilePath $filePath -Encoding UTF8
-          }
-          
-          # UI plugins
-          $uiPluginFiles = @(
-            "themes/manager.py", "themes/loader.py", "themes/renderer.py", "themes/validator.py", "themes/api.py",
-            "themes/config.py", "themes/exceptions.py", "themes/tests.py", "themes/docs.py", "themes/utils.py",
-            "widgets/basic.py", "widgets/advanced.py", "widgets/custom.py", "widgets/layout.py", "widgets/api.py",
-            "widgets/config.py", "widgets/exceptions.py", "widgets/tests.py", "widgets/docs.py", "widgets/utils.py",
-            "dialogs/message.py", "dialogs/input.py", "dialogs/file.py", "dialogs/color.py", "dialogs/api.py",
-            "dialogs/config.py", "dialogs/exceptions.py", "dialogs/tests.py", "dialogs/docs.py", "dialogs/utils.py",
-            "menus/main.py", "menus/context.py", "menus/toolbar.py", "menus/status.py", "menus/api.py",
-            "menus/config.py", "menus/exceptions.py", "menus/tests.py", "menus/docs.py", "menus/utils.py",
-            "toolbars/main.py", "toolbars/context.py", "toolbars/status.py", "toolbars/custom.py", "toolbars/api.py",
-            "toolbars/config.py", "toolbars/exceptions.py", "toolbars/tests.py", "toolbars/docs.py", "toolbars/utils.py"
-          )
-          
-          foreach ($file in $uiPluginFiles) {
-            $filePath = Join-Path $buildDir "plugins/ui/$file"
-            if ($file.Contains("/")) {
-              $dirPath = $file.Substring(0, $file.LastIndexOf("/"))
-              $dirFullPath = Join-Path $buildDir "plugins/ui/$dirPath"
-              New-Item -ItemType Directory -Path $dirFullPath -Force | Out-Null
-              $filePath = Join-Path $dirFullPath $file.Substring($file.LastIndexOf("/") + 1)
-            }
-            "# $file - UI plugin" | Out-File -FilePath $filePath -Encoding UTF8
-          }
-          
-          # Game plugins
-          $gamePluginFiles = @(
-            "engine/core.py", "engine/parser.py", "engine/validator.py", "engine/renderer.py", "engine/api.py",
-            "engine/config.py", "engine/exceptions.py", "engine/tests.py", "engine/docs.py", "engine/utils.py",
-            "parser/ast.py", "parser/lexer.py", "parser/grammar.py", "parser/semantics.py", "parser/api.py",
-            "parser/config.py", "parser/exceptions.py", "parser/tests.py", "parser/docs.py", "parser/utils.py",
-            "scheduler/task.py", "scheduler/queue.py", "scheduler/worker.py", "scheduler/monitor.py", "scheduler/api.py",
-            "scheduler/config.py", "scheduler/exceptions.py", "scheduler/tests.py", "scheduler/docs.py", "scheduler/utils.py",
-            "detector/pattern.py", "detector/heuristic.py", "detector/machine-learning.py", "detector/api.py", "detector/config.py",
-            "detector/exceptions.py", "detector/tests.py", "detector/docs.py", "detector/utils.py", "detector/monitor.py",
-            "controller/input.py", "controller/output.py", "controller/automation.py", "controller/api.py", "controller/config.py",
-            "controller/exceptions.py", "controller/tests.py", "controller/docs.py", "controller/utils.py", "controller/monitor.py"
-          )
-          
-          foreach ($file in $gamePluginFiles) {
-            $filePath = Join-Path $buildDir "plugins/game/$file"
-            if ($file.Contains("/")) {
-              $dirPath = $file.Substring(0, $file.LastIndexOf("/"))
-              $dirFullPath = Join-Path $buildDir "plugins/game/$dirPath"
-              New-Item -ItemType Directory -Path $dirFullPath -Force | Out-Null
-              $filePath = Join-Path $dirFullPath $file.Substring($file.LastIndexOf("/") + 1)
-            }
-            "# $file - Game plugin" | Out-File -FilePath $filePath -Encoding UTF8
-          }
-          
-          Write-Host "Plugin files creation completed successfully"
-          
-          # Create MASSIVE test files (1000+ files)
-          Write-Host "Creating MASSIVE test files..."
-          
-          # Unit tests
-          $unitTestFiles = @(
-            "test_core.py", "test_ui.py", "test_network.py", "test_storage.py", "test_security.py",
-            "test_database.py", "test_cache.py", "test_session.py", "test_auth.py", "test_authorization.py",
-            "test_api.py", "test_plugins.py", "test_themes.py", "test_configs.py", "test_utils.py",
-            "test_logger.py", "test_monitor.py", "test_scheduler.py", "test_backup.py", "test_update.py",
-            "test_widgets.py", "test_dialogs.py", "test_menus.py", "test_toolbars.py", "test_forms.py",
-            "test_engine.py", "test_parser.py", "test_detector.py", "test_controller.py", "test_automation.py",
-            "test_client.py", "test_server.py", "test_protocol.py", "test_encryption.py", "test_compression.py",
-            "test_filesystem.py", "test_replication.py", "test_migration.py", "test_backup_restore.py", "test_health.py",
-            "test_performance.py", "test_scalability.py", "test_reliability.py", "test_maintainability.py", "test_usability.py",
-            "test_accessibility.py", "test_internationalization.py", "test_localization.py", "test_responsive.py", "test_mobile.py"
-          )
-          
-          foreach ($test in $unitTestFiles) {
-            $testPath = Join-Path $buildDir "tests/unit/$test"
-            $className = ($test.Replace('test_', '').Replace('.py', '')).Split('_') | ForEach-Object { $_[0].ToString().ToUpper() + $_.Substring(1) } | Join-String -Separator ''
-            "# $test - Unit test`n`nimport unittest`n`nclass Test$className(unittest.TestCase):`n    def test_example(self):`n        self.assertTrue(True)" | Out-File -FilePath $testPath -Encoding UTF8
-          }
-          
-          # Integration tests
-          $integrationTestFiles = @(
-            "test_api_integration.py", "test_plugin_integration.py", "test_theme_integration.py", "test_config_integration.py",
-            "test_database_integration.py", "test_cache_integration.py", "test_session_integration.py", "test_auth_integration.py",
-            "test_network_integration.py", "test_storage_integration.py", "test_security_integration.py", "test_monitoring_integration.py",
-            "test_backup_integration.py", "test_update_integration.py", "test_migration_integration.py", "test_health_integration.py",
-            "test_performance_integration.py", "test_scalability_integration.py", "test_reliability_integration.py"
-          )
-          
-          foreach ($test in $integrationTestFiles) {
-            $testPath = Join-Path $buildDir "tests/integration/$test"
-            $className = ($test.Replace('test_', '').Replace('.py', '')).Split('_') | ForEach-Object { $_[0].ToString().ToUpper() + $_.Substring(1) } | Join-String -Separator ''
-            "# $test - Integration test`n`nimport unittest`n`nclass Test$className(unittest.TestCase):`n    def test_integration_example(self):`n        self.assertTrue(True)" | Out-File -FilePath $testPath -Encoding UTF8
-          }
-          
-          # E2E tests
-          $e2eTestFiles = @(
-            "test_user_flow.py", "test_admin_flow.py", "test_plugin_flow.py", "test_theme_flow.py", "test_config_flow.py",
-            "test_api_flow.py", "test_backup_flow.py", "test_update_flow.py", "test_migration_flow.py", "test_health_flow.py",
-            "test_performance_flow.py", "test_scalability_flow.py", "test_reliability_flow.py"
-          )
-          
-          foreach ($test in $e2eTestFiles) {
-            $testPath = Join-Path $buildDir "tests/e2e/$test"
-            $className = ($test.Replace('test_', '').Replace('.py', '')).Split('_') | ForEach-Object { $_[0].ToString().ToUpper() + $_.Substring(1) } | Join-String -Separator ''
-            "# $test - E2E test`n`nimport unittest`n`nclass Test$className(unittest.TestCase):`n    def test_e2e_example(self):`n        self.assertTrue(True)" | Out-File -FilePath $testPath -Encoding UTF8
-          }
-          
-          # Test fixtures
-          $fixtureFiles = @(
-            "users.json", "configs.json", "plugins.json", "themes.json", "sessions.json",
-            "permissions.json", "roles.json", "groups.json", "organizations.json", "projects.json",
-            "environments.json", "databases.json", "caches.json", "networks.json", "storage.json",
-            "security.json", "monitoring.json", "logging.json", "backup.json", "update.json"
-          )
-          
-          foreach ($fixture in $fixtureFiles) {
-            $fixturePath = Join-Path $buildDir "tests/fixtures/$fixture"
-            '{"test": "' + $fixture.Replace('.json', '') + '", "data": {}}' | Out-File -FilePath $fixturePath -Encoding UTF8
-          }
-          
-          # Test data
-          $testDataFiles = @(
-            "sample_data.json", "test_data.csv", "mock_responses.json", "test_config.yaml", "sample_schema.json",
-            "validation_data.json", "transformation_data.json", "export_data.json", "import_data.json", "backup_data.json",
-            "performance_data.json", "scalability_data.json", "reliability_data.json", "security_data.json", "compliance_data.json"
-          )
-          
-          foreach ($data in $testDataFiles) {
-            $dataPath = Join-Path $buildDir "tests/data/$data"
-            if ($data.EndsWith('.json')) {
-              '{"data": "' + $data.Replace('.json', '') + '", "sample": true}' | Out-File -FilePath $dataPath -Encoding UTF8
-            } elseif ($data.EndsWith('.csv')) {
-              "column1,column2,column3`nvalue1,value2,value3" | Out-File -FilePath $dataPath -Encoding UTF8
-            } elseif ($data.EndsWith('.yaml')) {
-              "data: " + $data.Replace('.yaml', '') + "`nsample: true" | Out-File -FilePath $dataPath -Encoding UTF8
-            }
-          }
-          
-          Write-Host "Test files creation completed successfully"
-          
-          # Create MASSIVE localization files (2000+ files)
-          Write-Host "Creating MASSIVE localization files..."
-          
-          $locales = @("en", "zh", "es", "fr", "de", "ja", "ko", "ru", "pt", "it", "ar", "hi")
-          $localeCategories = @("common", "ui", "errors", "messages", "help", "about", "navigation", "buttons", "forms", "validation", "notifications", "alerts")
-          
-          foreach ($locale in $locales) {
-            foreach ($category in $localeCategories) {
-              $localePath = Join-Path $buildDir "locales/$locale/$category.json"
-              "{" | Out-File -FilePath $localePath -Encoding UTF8
-              $keys = @("welcome", "hello", "goodbye", "yes", "no", "ok", "cancel", "save", "delete", "edit", "view", "create", "update", "remove", "search", "filter", "sort", "page", "next", "previous", "first", "last", "loading", "error", "success", "warning", "info")
-              $translations = @()
-              foreach ($key in $keys) {
-                $translations += "  ""$key"": ""$category $key translation for $locale"""
-              }
-              $translations -join ",`n" | Out-File -FilePath $localePath -Append -Encoding UTF8
-              "}" | Out-File -FilePath $localePath -Append -Encoding UTF8
-            }
-          }
-          
-          Write-Host "Localization files creation completed successfully"
-          
-          # Create MASSIVE template files (500+ files)
-          Write-Host "Creating MASSIVE template files..."
-          
-          $templateCategories = @{
-            "templates/project" = @("basic.json", "advanced.json", "enterprise.json", "minimal.json", "full.json", "custom.json")
-            "templates/module" = @("core.py", "utils.py", "api.py", "models.py", "views.py", "controllers.py", "services.py", "repositories.py")
-            "templates/plugin" = @("manifest.json", "main.py", "config.py", "ui.py", "test.py", "docs.md", "README.md", "LICENSE")
-            "templates/theme" = @("styles.css", "variables.json", "layout.html", "components.json", "assets.json", "config.json")
-            "templates/config" = @("basic.yaml", "advanced.yaml", "production.yaml", "development.yaml", "staging.yaml", "testing.yaml")
-            "templates/script" = @("automation.py", "batch.sh", "deployment.ps1", "migration.py", "backup.sh", "monitor.py", "health.py", "status.py")
-            "templates/style" = @("main.css", "variables.less", "mixins.scss", "components.css", "responsive.css", "print.css")
-            "templates/layout" = @("main.html", "admin.html", "user.html", "mobile.html", "desktop.html", "print.html")
-          }
-          
-          foreach ($category in $templateCategories.Keys) {
-            foreach ($file in $templateCategories[$category]) {
-              $filePath = Join-Path $buildDir "$category\$file"
-              "# $file - $category template`n`nThis is a template file for $category." | Out-File -FilePath $filePath -Encoding UTF8
-            }
-          }
-          
-          Write-Host "Template files creation completed successfully"
-          
-          # Create additional extensive files to reach target count
-          Write-Host "Creating additional extensive files to reach 18,173 target..."
-          
-          # Create schemas (200+ files)
-          $schemaFiles = @(
-            "api_schema.json", "database_schema.json", "config_schema.json", "plugin_schema.json", "theme_schema.json",
-            "user_schema.json", "session_schema.json", "auth_schema.json", "permission_schema.json", "role_schema.json",
-            "group_schema.json", "organization_schema.json", "project_schema.json", "environment_schema.json", "deployment_schema.json",
-            "backup_schema.json", "update_schema.json", "migration_schema.json", "health_schema.json", "monitoring_schema.json",
-            "logging_schema.json", "security_schema.json", "performance_schema.json", "scalability_schema.json", "reliability_schema.json"
-          )
-          
-          foreach ($schema in $schemaFiles) {
-            $schemaPath = Join-Path $buildDir "schemas/json/$schema"
-            '{"schema": "' + $schema.Replace('.json', '') + '", "type": "object", "properties": {}}' | Out-File -FilePath $schemaPath -Encoding UTF8
-          }
-          
-          # Create data files (300+ files)
-          $dataCategories = @{
-            "data/export" = @("users.csv", "configs.json", "plugins.json", "themes.json", "sessions.csv", "logs.json", "metrics.json")
-            "data/import" = @("users_template.csv", "configs_template.json", "plugins_template.json", "themes_template.json")
-            "data/backup" = @("daily.tar.gz", "weekly.tar.gz", "monthly.tar.gz", "manual.tar.gz", "auto.tar.gz")
-            "data/cache" = @("user_cache.json", "config_cache.json", "plugin_cache.json", "theme_cache.json", "session_cache.json")
-            "data/temp" = @("session_temp.json", "upload_temp.json", "export_temp.json", "import_temp.json", "backup_temp.json")
-            "data/logs" = @("system.log", "application.log", "security.log", "performance.log", "debug.log", "error.log")
-            "data/sessions" = @("session_1.json", "session_2.json", "session_3.json", "session_4.json", "session_5.json")
-            "data/users" = @("user_1.json", "user_2.json", "user_3.json", "user_4.json", "user_5.json", "admin.json", "guest.json")
-            "data/configs" = @("default.json", "admin.json", "user.json", "guest.json", "developer.json", "tester.json")
-            "data/plugins" = @("system.json", "ui.json", "game.json", "network.json", "storage.json", "security.json")
-            "data/themes" = @("default.json", "dark.json", "light.json", "blue.json", "green.json", "red.json")
-            "data/skins" = @("skin_1.json", "skin_2.json", "skin_3.json", "skin_4.json", "skin_5.json")
-            "data/avatars" = @("avatar_1.png", "avatar_2.png", "avatar_3.png", "avatar_4.png", "avatar_5.png")
-            "data/attachments" = @("attachment_1.pdf", "attachment_2.doc", "attachment_3.txt", "attachment_4.jpg", "attachment_5.zip")
-          }
-          
-          foreach ($category in $dataCategories.Keys) {
-            foreach ($file in $dataCategories[$category]) {
-              $filePath = Join-Path $buildDir "$category\$file"
-              if ($file.EndsWith('.json')) {
-                '{"file": "' + $file.Replace('.json', '') + '", "data": {}}' | Out-File -FilePath $filePath -Encoding UTF8
-              } elseif ($file.EndsWith('.csv')) {
-                "id,name,email`n1,User 1,user1@example.com`n2,User 2,user2@example.com" | Out-File -FilePath $filePath -Encoding UTF8
-              } else {
-                "# $file - Data file placeholder" | Out-File -FilePath $filePath -Encoding UTF8
-              }
-            }
-          }
-          
-          Write-Host "Additional extensive files creation completed successfully"
-          
-          # Final file count verification
-          Write-Host "Verifying final file count..."
-          $totalFiles = (Get-ChildItem -Path $buildDir -Recurse -File).Count
-          Write-Host "Total files created: $totalFiles"
-          
-          if ($totalFiles -lt 15000) {
-            Write-Host "WARNING: File count still below target. Creating additional placeholder files..."
-            # Create placeholder directory
-            $placeholderDir = Join-Path $buildDir "placeholder"
-            if (!(Test-Path $placeholderDir)) {
-              New-Item -ItemType Directory -Path $placeholderDir -Force | Out-Null
-            }
-            # Create additional placeholder files to reach target
-            for ($i = 1; $i -le 5000; $i++) {
-              $placeholderPath = Join-Path $placeholderDir "file_$i.txt"
-              "Placeholder file $i" | Out-File -FilePath $placeholderPath -Encoding UTF8
-            }
-            $finalCount = (Get-ChildItem -Path $buildDir -Recurse -File).Count
-            Write-Host "Final file count after placeholders: $finalCount"
-          }
-          
-          Write-Host "MASSIVE file creation process completed successfully"
+          # Template files creation removed - only essential files needed
+          # File creation process simplified - only essential structure needed
         }
       
     - name: Upload debug output
