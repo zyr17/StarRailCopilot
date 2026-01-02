@@ -68,14 +68,14 @@ jobs:
           Write-Host "requirements.txt not found, skipping."
         }
 
-    # [Step 7] Verify final structure
+    # [Step 6] Verify final structure
     - name: Verify Toolkit
       run: |
         Get-ChildItem -Path toolkit
         .\toolkit\python.exe --version
         .\toolkit\Git\bin\git.exe --version
 
-    # [Step 6] Compress the toolkit directory
+    # [Step 7] Compress the toolkit directory
     - name: Compress Toolkit
       run: |
         # -r: Recurse subdirectories
@@ -84,7 +84,7 @@ jobs:
         # ./toolkit: Source directory
         7z a -r toolkit.zip ./toolkit
 
-    # [Step 7] Upload the compressed zip as artifact
+    # [Step 8] Upload the compressed zip as artifact
     - name: Upload Toolkit Artifact
       uses: actions/upload-artifact@v4
       with:
