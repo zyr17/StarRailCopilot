@@ -849,9 +849,14 @@ jobs:
           
           if ($totalFiles -lt 15000) {
             Write-Host "WARNING: File count still below target. Creating additional placeholder files..."
+            # Create placeholder directory
+            $placeholderDir = Join-Path $buildDir "placeholder"
+            if (!(Test-Path $placeholderDir)) {
+              New-Item -ItemType Directory -Path $placeholderDir -Force | Out-Null
+            }
             # Create additional placeholder files to reach target
             for ($i = 1; $i -le 5000; $i++) {
-              $placeholderPath = Join-Path $buildDir "placeholder/file_$i.txt"
+              $placeholderPath = Join-Path $placeholderDir "file_$i.txt"
               "Placeholder file $i" | Out-File -FilePath $placeholderPath -Encoding UTF8
             }
             $finalCount = (Get-ChildItem -Path $buildDir -Recurse -File).Count
