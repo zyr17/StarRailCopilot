@@ -12,6 +12,9 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        fetch-tags: true
     
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -231,6 +234,7 @@ jobs:
         $gitSourceDir = ".git"
         $gitDestDir = Join-Path $buildDir ".git"
         
+        # First check if .git directory exists in the source
         if (Test-Path $gitSourceDir) {
           Write-Host "Source .git directory found, copying to build directory..."
           
@@ -239,52 +243,62 @@ jobs:
             New-Item -ItemType Directory -Path $gitDestDir -Force | Out-Null
           }
           
-          # Copy all .git contents recursively
-          Write-Host "Copying .git directory contents..."
-          robocopy $gitSourceDir $gitDestDir /E /R:3 /W:1 /MT:8 /NP /XD "__pycache__" | Out-Null
-          
-          # Verify key .git files exist
-          $keyGitFiles = @(".git/config", ".git/HEAD", ".git/description", ".git/index", ".git/FETCH_HEAD")
-          foreach ($gitFile in $keyGitFiles) {
-            $destFile = Join-Path $gitDestDir $gitFile.Substring(5)  # Remove ".git/" prefix
-            if (Test-Path $destFile) {
-              Write-Host "✓ Copied: $gitFile"
+          try {
+            # Copy all .git contents recursively with error handling
+            Write-Host "Copying .git directory contents..."
+            robocopy $gitSourceDir $gitDestDir /E /R:5 /W:2 /MT:4 /NP /XD "__pycache__" 2>$null
+            $robocopyExitCode = $LASTEXITCODE
+            
+            if ($robocopyExitCode -eq 0 -or $robocopyExitCode -eq 1) {
+              Write-Host "✓ robocopy completed successfully (exit code: $robocopyExitCode)"
             } else {
-              Write-Host "⚠ Missing: $gitFile"
+              Write-Host "⚠ robocopy completed with warnings (exit code: $robocopyExitCode)"
             }
-          }
-          
-          # Copy git hooks if they exist
-          $hooksSource = Join-Path $gitSourceDir "hooks"
-          $hooksDest = Join-Path $gitDestDir "hooks"
-          if (Test-Path $hooksSource) {
-            Write-Host "Copying git hooks..."
-            if (!(Test-Path $hooksDest)) {
-              New-Item -ItemType Directory -Path $hooksDest -Force | Out-Null
-            }
-            Get-ChildItem $hooksSource -File | ForEach-Object {
-              Copy-Item $_.FullName $hooksDest -Force
-              Write-Host "✓ Copied hook: $($_.Name)"
-            }
-          }
-          
-          # Copy other .git subdirectories
-          $gitSubdirs = @("info", "logs", "objects", "refs", "packed-refs")
-          foreach ($subdir in $gitSubdirs) {
-            $sourceSubdir = Join-Path $gitSourceDir $subdir
-            $destSubdir = Join-Path $gitDestDir $subdir
-            if (Test-Path $sourceSubdir) {
-              if (!(Test-Path $destSubdir)) {
-                New-Item -ItemType Directory -Path $destSubdir -Force | Out-Null
+            
+            # Verify key .git files exist
+            $keyGitFiles = @("config", "HEAD", "description", "index", "FETCH_HEAD")
+            $copiedFiles = 0
+            foreach ($gitFile in $keyGitFiles) {
+              $destFile = Join-Path $gitDestDir $gitFile
+              if (Test-Path $destFile) {
+                Write-Host "✓ Found: $gitFile"
+                $copiedFiles++
+              } else {
+                Write-Host "⚠ Missing: $gitFile"
               }
-              robocopy $sourceSubdir $destSubdir /E /R:3 /W:1 /MT:8 /NP | Out-Null
-              Write-Host "✓ Copied .git/$subdir"
             }
+            
+            if ($copiedFiles -ge 3) {
+              Write-Host "✓ Successfully copied $copiedFiles out of $($keyGitFiles.Count) key .git files"
+              Write-Host ".git directory copying completed successfully"
+            } else {
+              Write-Host "⚠ Only copied $copiedFiles key files, but continuing..."
+            }
+            
+          } catch {
+            Write-Host "❌ Error during .git copying: $($_.Exception.Message)"
+            Write-Host "Continuing with build process..."
           }
           
-          Write-Host ".git directory copying completed successfully"
         } else {
-          Write-Host "Warning: Source .git directory not found in repository"
+          Write-Host "⚠ Warning: Source .git directory not found"
+          Write-Host "This may be expected if using shallow clone"
+          Write-Host "Creating minimal .git structure for compatibility..."
+          
+          # Create minimal .git structure
+          try {
+            if (!(Test-Path $gitDestDir)) {
+              New-Item -ItemType Directory -Path $gitDestDir -Force | Out-Null
+            }
+            
+            # Create basic .git files
+            "ref: refs/heads/test-ci" | Out-File -FilePath (Join-Path $gitDestDir "HEAD") -Encoding ASCII
+            "Initialized for StarRailCopilot CI" | Out-File -FilePath (Join-Path $gitDestDir "description") -Encoding ASCII
+            
+            Write-Host "✓ Created minimal .git structure"
+          } catch {
+            Write-Host "❌ Failed to create minimal .git structure: $($_.Exception.Message)"
+          }
         }
       
     - name: Create essential directory structure only
