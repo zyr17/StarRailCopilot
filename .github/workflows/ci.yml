@@ -270,6 +270,11 @@ jobs:
           foreach ($category in $exampleCategories.Keys) {
             foreach ($file in $exampleCategories[$category]) {
               $filePath = Join-Path $buildDir "$category\$file"
+              # 确保目录存在
+              $fileDir = Split-Path $filePath -Parent
+              if (!(Test-Path $fileDir)) {
+                New-Item -ItemType Directory -Path $fileDir -Force | Out-Null
+              }
               "# $file - $category example`n`nThis is an example file for $category." | Out-File -FilePath $filePath -Encoding UTF8
             }
           }
@@ -290,6 +295,11 @@ jobs:
           
           foreach ($file in $referenceDocs) {
             $filePath = Join-Path $buildDir "docs/reference\$file"
+            # 确保目录存在
+            $fileDir = Split-Path $filePath -Parent
+            if (!(Test-Path $fileDir)) {
+              New-Item -ItemType Directory -Path $fileDir -Force | Out-Null
+            }
             "# $file - Reference documentation`n`nThis is the $file reference." | Out-File -FilePath $filePath -Encoding UTF8
           }
           
