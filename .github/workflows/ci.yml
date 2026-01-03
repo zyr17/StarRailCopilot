@@ -170,6 +170,28 @@ jobs:
             Write-Error "Failed: Toolkit not found in destination!"
             exit 1
         }
+
+    - name: Sync Git and Reset Target
+      run: |
+        $targetDir = "webapp/dist/win-unpacked"
+        $gitTarget = Join-Path $targetDir ".git"
+        
+        Write-Host "Copying .git folder to $targetDir ..."
+        # Ensure hidden .git directory is copied recursively
+        Copy-Item -Path "./.git" -Destination $gitTarget -Recurse -Force
+        
+        Write-Host "Executing git reset --hard in target directory..."
+        pushd $targetDir
+        
+        # Bypass ownership safety checks for the detached directory
+        git config --global --add safe.directory "*"
+        
+        # Reset tracked files to the last commit state
+        git reset --hard
+        
+        # Optional: show status to verify the state
+        git status
+        popd
     
     - name: Upload Windows artifacts
       uses: actions/upload-artifact@v4
