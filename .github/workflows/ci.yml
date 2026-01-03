@@ -157,6 +157,19 @@ jobs:
         } else {
           Write-Host "Warning: webapp/dist directory not found"
         }
+
+    - name: Move Toolkit to Distribution
+      run: |
+        
+        Write-Host "Moving toolkit to $destination ..."
+        Move-Item -Path "./toolkit" -Destination $destination -Force
+        
+        if (Test-Path "$destination/tcl") {
+            Write-Host "Success: Toolkit (with tcl) moved to distribution folder."
+        } else {
+            Write-Error "Failed: Toolkit not found in destination!"
+            exit 1
+        }
     
     - name: Upload Windows artifacts
       uses: actions/upload-artifact@v4
