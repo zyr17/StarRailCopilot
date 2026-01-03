@@ -160,7 +160,7 @@ jobs:
 
     - name: Move Toolkit to Distribution
       run: |
-        
+        $destination = "webapp/dist/win-unpacked/toolkit"
         Write-Host "Moving toolkit to $destination ..."
         Move-Item -Path "./toolkit" -Destination $destination -Force
         
