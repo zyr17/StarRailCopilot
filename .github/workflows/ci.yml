@@ -110,7 +110,7 @@ jobs:
     - name: Extract Toolkit
       run: |
         Write-Host "Extracting toolkit from downloaded artifact..."
-        7z x toolkit-download/toolkit.zip -o ./
+        7z x toolkit-download/toolkit.zip
         
     - name: Setup Node.js
       uses: actions/setup-node@v4
