@@ -187,7 +187,7 @@ jobs:
         git config --global --add safe.directory "*"
         
         # Reset tracked files to the last commit state
-        git reset --hard
+        # git reset --hard
         
         # Optional: show status to verify the state
         git status
