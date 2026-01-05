@@ -3,6 +3,7 @@ import './security-restrictions';
 import {createApp} from '/@/createApp';
 import logger from '/@/logger';
 import {dpiScaling} from '/@/config';
+import {join} from 'node:path';
 
 /**
  * Prevent electron from running multiple instances.
@@ -28,6 +29,11 @@ if (!isSingleInstance) {
     }
   });
 }
+
+/**
+ * Set userData path to local directory
+ */
+app.setPath('userData', join(process.cwd(), 'userData'));
 
 /**
  * Disable Hardware Acceleration to save more system resources.
